@@ -20,7 +20,7 @@ The amount of load balancers.
 The amount of master nodes.
 
 ## master_node_memory
-The amount of memory (in megabytes) on each master node.
+The amount of memory (in megabytes) for each master node.
 
 ## provider_location
 The cluster's geographical location.
@@ -41,7 +41,7 @@ The amount of worker nodes.
 _This variable is currently unused._
 
 ## worker_node_memory
-The amount of memory (in megabytes) on each worker node.
+The amount of memory (in megabytes) for each worker node.
 
 # Output Variables
 
