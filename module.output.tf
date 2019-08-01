@@ -31,4 +31,5 @@ output "master_node_addresses" {
 output "service_account_token" {
   description = "The token for the Cluster Admin service account"
   value       = ""
+  sensitive   = true
 }
