@@ -16,6 +16,9 @@ _**NOTE:** The name will be truncated to 32 characters._
 ## load_balancer_count
 The amount of load balancers.
 
+## load_balancer_memory
+The amount of memory (in megabytes) for each load balancer.
+
 ## master_node_count
 The amount of master nodes.
 

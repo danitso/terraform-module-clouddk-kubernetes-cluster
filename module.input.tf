@@ -8,6 +8,11 @@ variable "load_balancer_count" {
   default     = 1
 }
 
+variable "load_balancer_memory" {
+  description = "The amount of memory (in megabytes) for each load balancer"
+  default     = 1024
+}
+
 variable "master_node_count" {
   description = "The amount of master nodes"
   default     = 3
