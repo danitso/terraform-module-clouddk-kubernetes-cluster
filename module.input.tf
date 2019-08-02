@@ -4,32 +4,32 @@ variable "cluster_name" {
 }
 
 variable "load_balancer_count" {
-  description = "The amount of load balancers"
+  description = "The number of load balancers"
   default     = 1
 }
 
 variable "load_balancer_memory" {
-  description = "The amount of memory (in megabytes) for each load balancer"
+  description = "The minimum amount of memory (in megabytes) for each load balancer"
   default     = 1024
 }
 
 variable "load_balancer_processors" {
-  description = "The amount of processors (cores) for each load balancer"
+  description = "The minimum number of processors (cores) for each load balancer"
   default     = 1
 }
 
 variable "master_node_count" {
-  description = "The amount of master nodes"
+  description = "The number of master nodes"
   default     = 3
 }
 
 variable "master_node_memory" {
-  description = "The amount of memory (in megabytes) for each master node"
+  description = "The minimum amount of memory (in megabytes) for each master node"
   default     = 8192
 }
 
 variable "master_node_processors" {
-  description = "The amount of processors (cores) for each master node"
+  description = "The minimum number of processors (cores) for each master node"
   default     = 4
 }
 
@@ -53,7 +53,7 @@ variable "provider_username" {
 }
 
 variable "worker_node_count" {
-  description = "The amount of worker nodes"
+  description = "The number of worker nodes"
   default     = 2
 }
 
@@ -63,11 +63,11 @@ variable "worker_node_limit" {
 }
 
 variable "worker_node_memory" {
-  description = "The amount of memory (in megabytes) for each worker node"
+  description = "The minimum amount of memory (in megabytes) for each worker node"
   default     = 4096
 }
 
 variable "worker_node_processors" {
-  description = "The amount of processors (cores) for each worker node"
+  description = "The minimum number of processors (cores) for each worker node"
   default     = 2
 }

@@ -14,22 +14,22 @@ The name of the cluster.
 _**NOTE:** The name will be truncated to 32 characters._
 
 ## load_balancer_count
-The amount of load balancers.
+The number of load balancers.
 
 ## load_balancer_memory
-The amount of memory (in megabytes) for each load balancer.
+The minimum amount of memory (in megabytes) for each load balancer.
 
 ## load_balancer_processors
-The amount of processors (cores) for each load balancer.
+The minimum number of processors (cores) for each load balancer.
 
 ## master_node_count
-The amount of master nodes.
+The number of master nodes.
 
 ## master_node_memory
-The amount of memory (in megabytes) for each master node.
+The minimum amount of memory (in megabytes) for each master node.
 
 ## master_node_processors
-The amount of processors (cores) for each master node.
+The minimum number of processors (cores) for each master node.
 
 ## provider_location
 The cluster's geographical location.
@@ -50,10 +50,10 @@ The amount of worker nodes.
 _This variable is currently unused._
 
 ## worker_node_memory
-The amount of memory (in megabytes) for each worker node.
+The minimum amount of memory (in megabytes) for each worker node.
 
 ## worker_node_processors
-The amount of processors (cores) for each worker node.
+The minimum number of processors (cores) for each worker node.
 
 # Output Variables
 
