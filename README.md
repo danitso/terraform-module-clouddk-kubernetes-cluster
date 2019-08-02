@@ -19,11 +19,17 @@ The amount of load balancers.
 ## load_balancer_memory
 The amount of memory (in megabytes) for each load balancer.
 
+## load_balancer_processors
+The amount of processors (cores) for each load balancer.
+
 ## master_node_count
 The amount of master nodes.
 
 ## master_node_memory
 The amount of memory (in megabytes) for each master node.
+
+## master_node_processors
+The amount of processors (cores) for each master node.
 
 ## provider_location
 The cluster's geographical location.
@@ -32,7 +38,7 @@ The cluster's geographical location.
 _This variable is currently unused._
 
 ## provider_token
-The Cloud.dk API key.
+The API key.
 
 ## provider_username
 _This variable is currently unused._
@@ -45,6 +51,9 @@ _This variable is currently unused._
 
 ## worker_node_memory
 The amount of memory (in megabytes) for each worker node.
+
+## worker_node_processors
+The amount of processors (cores) for each worker node.
 
 # Output Variables
 
