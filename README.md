@@ -1,4 +1,4 @@
-# Kubernetes Cluster on Cloud.dk
+# Kubernetes Cluster
 Terraform Module for creating a Kubernetes Cluster on Cloud.dk
 
 _**NOTE**: This module is currently under development._
