@@ -80,3 +80,9 @@ The public IP addresses of the master nodes.
 
 ## service_account_token
 The token for the Cluster Admin service account.
+
+## worker_node_token
+The worker node token for the Kubernetes API.
+
+## worker_node_token_ca_certificate_hash
+The SHA256 checksum of the worker node token's CA certificate.

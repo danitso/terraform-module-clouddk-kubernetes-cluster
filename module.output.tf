@@ -58,3 +58,14 @@ output "service_account_token" {
   value       = ""
   sensitive   = true
 }
+
+output "worker_node_token" {
+  description = "The worker node token for the Kubernetes API"
+  value       = ""
+  sensitive   = true
+}
+
+output "worker_node_token_ca_certicate_hash" {
+  description = "The SHA256 checksum of the worker node token's CA certificate"
+  value       = ""
+}
