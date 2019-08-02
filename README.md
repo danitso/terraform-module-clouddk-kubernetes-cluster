@@ -69,11 +69,23 @@ The absolute path to the Kubernetes configuration file for use with `kubectl`.
 ## config_raw
 The raw Kubernetes configuration.
 
-## load_balancer_addresses
-The IP addresses of the load balancers.
+## load_balancer_private_addresses
+The private IP addresses of the load balancers.
 
-## master_node_addresses
-The IP addresses of the master nodes.
+## load_balancer_private_dns
+The private DNS record for the load balancers.
+
+## load_balancer_public_addresses
+The public IP addresses of the load balancers.
+
+## load_balancer_public_dns
+The public DNS record for the load balancers.
+
+## master_node_private_addresses
+The private IP addresses of the master nodes.
+
+## master_node_public_addresses
+The public IP addresses of the master nodes.
 
 ## service_account_token
 The token for the Cluster Admin service account.

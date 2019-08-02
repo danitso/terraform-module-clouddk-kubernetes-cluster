@@ -18,13 +18,33 @@ output "config_raw" {
   value       = ""
 }
 
-output "load_balancer_addresses" {
-  description = "The IP addresses of the load balancers"
+output "load_balancer_private_addresses" {
+  description = "The private IP addresses of the load balancers"
   value       = []
 }
 
-output "master_node_addresses" {
-  description = "The IP addresses of the master nodes"
+output "load_balancer_private_dns" {
+  description = "The private DNS record for the load balancers"
+  value       = ""
+}
+
+output "load_balancer_public_addresses" {
+  description = "The public IP addresses of the load balancers"
+  value       = []
+}
+
+output "load_balancer_public_dns" {
+  description = "The public DNS record for the load balancers"
+  value       = ""
+}
+
+output "master_node_private_addresses" {
+  description = "The private IP addresses of the master nodes"
+  value       = []
+}
+
+output "master_node_public_addresses" {
+  description = "The public IP addresses of the master nodes"
   value       = []
 }
 
