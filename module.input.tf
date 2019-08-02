@@ -51,23 +51,3 @@ variable "provider_username" {
   description = "This variable is currently unused"
   default     = ""
 }
-
-variable "worker_node_count" {
-  description = "The number of worker nodes"
-  default     = 2
-}
-
-variable "worker_node_limit" {
-  description = "This variable is currently unused"
-  default     = 0
-}
-
-variable "worker_node_memory" {
-  description = "The minimum amount of memory (in megabytes) for each worker node"
-  default     = 4096
-}
-
-variable "worker_node_processors" {
-  description = "The minimum number of processors (cores) for each worker node"
-  default     = 2
-}

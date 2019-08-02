@@ -43,25 +43,16 @@ The API key.
 ## provider_username
 _This variable is currently unused._
 
-## worker_node_count
-The amount of worker nodes.
-
-## worker_node_limit
-_This variable is currently unused._
-
-## worker_node_memory
-The minimum amount of memory (in megabytes) for each worker node.
-
-## worker_node_processors
-The minimum number of processors (cores) for each worker node.
-
 # Output Variables
 
 ## api_ca_certificate
 The CA certificate for the Kubernetes API.
 
-## api_endpoints
-The endpoints for the Kubernetes API.
+## api_private_endpoint
+The private endpoint for the Kubernetes API.
+
+## api_public_endpoint
+The public endpoint for the Kubernetes API.
 
 ## config_file
 The absolute path to the Kubernetes configuration file for use with `kubectl`.

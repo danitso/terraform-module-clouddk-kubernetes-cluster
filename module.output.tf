@@ -3,9 +3,14 @@ output "api_ca_certificate" {
   value       = ""
 }
 
-output "api_endpoints" {
-  description = "The endpoints for the Kubernetes API"
-  value       = []
+output "api_private_endpoint" {
+  description = "The private endpoint for the Kubernetes API"
+  value       = ""
+}
+
+output "api_public_endpoint" {
+  description = "The public endpoint for the Kubernetes API"
+  value       = ""
 }
 
 output "config_file" {
