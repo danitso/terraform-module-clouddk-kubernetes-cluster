@@ -72,8 +72,17 @@ The public IP addresses of the load balancers.
 ## load_balancer_public_dns
 The public DNS record for the load balancers.
 
-## load_balancer_root_password
-The root password for the load balancers.
+## load_balancer_ssh_private_key
+The private SSH key for the load balancers.
+
+## load_balancer_ssh_private_key_file
+The relative path to the private SSH key for the load balancers.
+
+## load_balancer_ssh_public_key
+The public SSH key for the load balancers.
+
+## load_balancer_ssh_public_key_file
+The relative path to the public SSH key for the load balancers.
 
 ## load_balancer_stats_password
 The password for the load balancer statistics.
