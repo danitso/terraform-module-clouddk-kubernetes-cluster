@@ -10,11 +10,11 @@ resource "null_resource" "kubernetes_master_install" {
     type  = "ssh"
     agent = false
 
-    host     = element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)
-    port     = 22
-    user     = "root"
-    password = random_string.master_node_root_password.result
-    timeout  = "5m"
+    host        = element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)
+    port        = 22
+    user        = "root"
+    private_key = tls_private_key.master_node_ssh.private_key_pem
+    timeout     = "5m"
   }
 
   provisioner "remote-exec" {
@@ -49,11 +49,11 @@ resource "null_resource" "kubernetes_master_init" {
     type  = "ssh"
     agent = false
 
-    host     = element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)
-    port     = 22
-    user     = "root"
-    password = random_string.master_node_root_password.result
-    timeout  = "5m"
+    host        = element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)
+    port        = 22
+    user        = "root"
+    private_key = tls_private_key.master_node_ssh.private_key_pem
+    timeout     = "5m"
   }
 
   provisioner "file" {
@@ -122,11 +122,11 @@ resource "null_resource" "kubernetes_master_join" {
     type  = "ssh"
     agent = false
 
-    host     = element(flatten(clouddk_server.master_node[count.index + 1].network_interface_addresses), 0)
-    port     = 22
-    user     = "root"
-    password = random_string.master_node_root_password.result
-    timeout  = "5m"
+    host        = element(flatten(clouddk_server.master_node[count.index + 1].network_interface_addresses), 0)
+    port        = 22
+    user        = "root"
+    private_key = tls_private_key.master_node_ssh.private_key_pem
+    timeout     = "5m"
   }
 
   provisioner "remote-exec" {
@@ -136,7 +136,7 @@ resource "null_resource" "kubernetes_master_join" {
   }
 }
 
-resource "null_resource" "kubernetes_master_network" {
+resource "null_resource" "kubernetes_network" {
   depends_on = [
     "clouddk_server.master_node",
     "null_resource.kubernetes_master_install",
@@ -148,11 +148,11 @@ resource "null_resource" "kubernetes_master_network" {
     type  = "ssh"
     agent = false
 
-    host     = element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)
-    port     = 22
-    user     = "root"
-    password = random_string.master_node_root_password.result
-    timeout  = "5m"
+    host        = element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)
+    port        = 22
+    user        = "root"
+    private_key = tls_private_key.master_node_ssh.private_key_pem
+    timeout     = "5m"
   }
 
   provisioner "remote-exec" {

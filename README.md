@@ -48,11 +48,11 @@ _This variable is currently unused._
 ## api_ca_certificate
 The CA certificate for the Kubernetes API.
 
-## api_private_endpoint
-The private endpoint for the Kubernetes API.
+## api_private_endpoints
+The private endpoints for the Kubernetes API.
 
-## api_public_endpoint
-The public endpoint for the Kubernetes API.
+## api_public_endpoints
+The public endpoints for the Kubernetes API.
 
 ## config_file
 The absolute path to the Kubernetes configuration file for use with `kubectl`.
@@ -90,14 +90,26 @@ The private IP addresses of the master nodes.
 ## master_node_public_addresses
 The public IP addresses of the master nodes.
 
-## master_node_root_password
-The root password for the load balancers.
+## master_node_ssh_private_key
+The private SSH key for the master nodes.
+
+## master_node_ssh_private_key_file
+The relative path to the private SSH key for the master nodes.
+
+## master_node_ssh_public_key
+The public SSH key for the master nodes.
+
+## master_node_ssh_public_key_file
+The relative path to the public SSH key for the master nodes.
 
 ## service_account_token
 The token for the Cluster Admin service account.
 
+## worker_node_certificate_key
+The certificate key for use when joining the Kubernetes cluster.
+
 ## worker_node_token
-The worker node token for the Kubernetes API.
+The token for use when joining the Kubernetes cluster.
 
 ## worker_node_token_ca_certificate_hash
-The SHA256 checksum of the worker node token's CA certificate.
+The SHA256 checksum of the CA certificate for use when joining the Kubernetes cluster.
