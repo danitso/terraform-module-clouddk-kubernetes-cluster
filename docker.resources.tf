@@ -1,15 +1,19 @@
 resource "null_resource" "docker" {
   count = max(var.master_node_count, 1)
 
+  depends_on = [
+    "clouddk_server.master_node",
+  ]
+
   connection {
     type  = "ssh"
     agent = false
 
-    host     = "${element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)}"
+    host     = element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)
     port     = 22
     user     = "root"
-    password = "${random_string.master_node_root_password.result}"
-    timeout = "5m"
+    password = random_string.master_node_root_password.result
+    timeout  = "5m"
   }
 
   provisioner "remote-exec" {
@@ -18,7 +22,29 @@ resource "null_resource" "docker" {
       "apt-key fingerprint 0EBFCD88",
       "add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable'",
       "DEBIAN_FRONTEND=noninteractive apt-get update",
-      "DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io",
+      "DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce=5:18.09.8~3-0~ubuntu-xenial docker-ce-cli=5:18.09.8~3-0~ubuntu-xenial containerd.io",
+    ]
+  }
+
+  provisioner "file" {
+    content     = <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+    destination = "/etc/docker/daemon.json"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir -p /etc/systemd/system/docker.service.d",
+      "systemctl daemon-reload",
+      "systemctl restart docker",
     ]
   }
 }

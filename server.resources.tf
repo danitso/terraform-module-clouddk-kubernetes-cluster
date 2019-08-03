@@ -13,12 +13,11 @@ resource "clouddk_server" "master_node" {
     type  = "ssh"
     agent = false
 
-    host     = "${element(flatten(self.network_interface_addresses), 0)}"
+    host     = element(flatten(self.network_interface_addresses), 0)
     port     = 22
     user     = "root"
-    password = "${random_string.master_node_root_password.result}"
-
-    timeout = "5m"
+    password = random_string.master_node_root_password.result
+    timeout  = "5m"
   }
 
   provisioner "remote-exec" {
