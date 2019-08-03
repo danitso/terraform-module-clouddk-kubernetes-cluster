@@ -1,6 +1,6 @@
 variable "cluster_name" {
   description = "The name of the cluster"
-  default     = "new-k8s-cluster"
+  default     = "my-new-cluster"
 }
 
 variable "load_balancer_count" {

@@ -25,23 +25,46 @@ output "config_raw" {
 
 output "load_balancer_private_addresses" {
   description = "The private IP addresses of the load balancers"
-  value       = []
+  value       = module.load_balancers.load_balancer_private_addresses
 }
 
 output "load_balancer_private_dns" {
   description = "The private DNS record for the load balancers"
-  value       = ""
+  value       = module.load_balancers.load_balancer_private_dns
 }
 
 output "load_balancer_public_addresses" {
   description = "The public IP addresses of the load balancers"
-  value       = []
+  value       = module.load_balancers.load_balancer_public_addresses
 }
 
 output "load_balancer_public_dns" {
   description = "The public DNS record for the load balancers"
-  value       = ""
+  value       = module.load_balancers.load_balancer_public_dns
 }
+
+output "load_balancer_root_password" {
+  description = "The root password for the load balancers"
+  value       = module.load_balancers.load_balancer_root_password
+  sensitive   = true
+}
+
+output "load_balancer_stats_password" {
+  description = "The password for the load balancer statistics"
+  value       = module.load_balancers.load_balancer_stats_password
+  sensitive   = true
+}
+
+output "load_balancer_stats_urls" {
+  description = "The URLs for the load balancer statistics"
+  value       = module.load_balancers.load_balancer_stats_urls
+}
+
+output "load_balancer_stats_username" {
+  description = "The username for the load balancer statistics"
+  value       = module.load_balancers.load_balancer_stats_username
+}
+
 
 output "master_node_private_addresses" {
   description = "The private IP addresses of the master nodes"
@@ -50,7 +73,13 @@ output "master_node_private_addresses" {
 
 output "master_node_public_addresses" {
   description = "The public IP addresses of the master nodes"
-  value       = []
+  value       = flatten(clouddk_server.master_node.*.network_interface_addresses)
+}
+
+output "master_node_root_password" {
+  description = "The root password for the load balancers"
+  value       = random_string.master_node_root_password.result
+  sensitive   = true
 }
 
 output "service_account_token" {

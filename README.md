@@ -72,11 +72,26 @@ The public IP addresses of the load balancers.
 ## load_balancer_public_dns
 The public DNS record for the load balancers.
 
+## load_balancer_root_password
+The root password for the load balancers.
+
+## load_balancer_stats_password
+The password for the load balancer statistics.
+
+## load_balancer_stats_urls
+The URLs for the load balancer statistics.
+
+## load_balancer_stats_username
+The username for the load balancer statistics.
+
 ## master_node_private_addresses
 The private IP addresses of the master nodes.
 
 ## master_node_public_addresses
 The public IP addresses of the master nodes.
+
+## master_node_root_password
+The root password for the load balancers.
 
 ## service_account_token
 The token for the Cluster Admin service account.
