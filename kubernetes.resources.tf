@@ -136,6 +136,33 @@ resource "null_resource" "kubernetes_master_join" {
   }
 }
 
+resource "null_resource" "kubernetes_master_network" {
+  depends_on = [
+    "clouddk_server.master_node",
+    "null_resource.kubernetes_master_install",
+    "null_resource.kubernetes_master_init",
+    "null_resource.kubernetes_master_join",
+  ]
+
+  connection {
+    type  = "ssh"
+    agent = false
+
+    host     = element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)
+    port     = 22
+    user     = "root"
+    password = random_string.master_node_root_password.result
+    timeout  = "5m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "export KUBECONFIG=/etc/kubernetes/admin.conf",
+      "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')",
+    ]
+  }
+}
+
 resource "random_string" "kubernetes_bootstrap_token" {
   count = 2
 
