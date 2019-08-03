@@ -1,8 +1,8 @@
 resource "clouddk_server" "master_node" {
   count = max(var.master_node_count, 1)
 
-  hostname      = "k8s-master-${var.cluster_name}-${count.index + 1}"
-  label         = "k8s-master-${var.cluster_name}-${count.index + 1}"
+  hostname      = "k8s-master-node-${var.cluster_name}-${count.index + 1}"
+  label         = "k8s-master-node-${var.cluster_name}-${count.index + 1}"
   root_password = "${random_string.master_node_root_password.result}"
 
   location_id = var.provider_location
