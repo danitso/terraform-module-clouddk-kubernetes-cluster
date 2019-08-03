@@ -52,7 +52,7 @@ Documentation=https://github.com/etcd-io/etcd
 
 [Service]
 ExecStart=/usr/local/bin/etcd \
-  --name ${var.cluster_name} \
+  --name ${element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)} \
   --cert-file=/etc/etcd/kubernetes.pem \
   --key-file=/etc/etcd/kubernetes-key.pem \
   --peer-cert-file=/etc/etcd/kubernetes.pem \
@@ -63,7 +63,7 @@ ExecStart=/usr/local/bin/etcd \
   --client-cert-auth \
   --initial-advertise-peer-urls https://${element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)}:2380 \
   --listen-peer-urls https://${element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)}:2380 \
-  --listen-client-urls https://${element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)}:2379,http://127.0.0.1:2379 \
+  --listen-client-urls https://${element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)}:2379,https://127.0.0.1:2379 \
   --advertise-client-urls https://${element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)}:2379 \
   --initial-cluster-token etcd-cluster-0 \
   --initial-cluster ${join(",", formatlist("%s=https://%s:2380", flatten(clouddk_server.master_node.*.network_interface_addresses), flatten(clouddk_server.master_node.*.network_interface_addresses)))} \
@@ -71,6 +71,7 @@ ExecStart=/usr/local/bin/etcd \
   --data-dir=/var/lib/etcd
 Restart=on-failure
 RestartSec=5
+Type=notify
 
 [Install]
 WantedBy=multi-user.target
@@ -85,7 +86,15 @@ EOT
       "systemctl daemon-reload",
       "systemctl enable etcd",
       "systemctl start etcd",
+      "systemctl restart etcd",
     ]
+  }
+
+  triggers = {
+    addresses = "${md5(join(",", flatten(clouddk_server.master_node[count.index].network_interface_addresses)))}"
+    ca_cert   = "${md5(tls_self_signed_cert.ca.cert_pem)}",
+    etcd_cert = "${md5(tls_locally_signed_cert.etcd.cert_pem)}",
+    etcd_key  = "${md5(tls_private_key.etcd.private_key_pem)}",
   }
 }
 
@@ -98,7 +107,8 @@ resource "tls_cert_request" "etcd" {
     key_algorithm   = "RSA"
     private_key_pem = tls_private_key.etcd.private_key_pem
 
-    ip_addresses = flatten(clouddk_server.master_node.*.network_interface_addresses)
+    dns_names    = ["localhost"]
+    ip_addresses = concat(flatten(clouddk_server.master_node.*.network_interface_addresses), list("127.0.0.1"))
 
     subject {
         common_name         = "Kubernetes"
@@ -120,7 +130,9 @@ resource "tls_locally_signed_cert" "etcd" {
 
     allowed_uses = [
         "digital_signature",
+        "key_agreement",
         "key_encipherment",
         "server_auth",
+        "client_auth",
     ]
 }
