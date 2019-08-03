@@ -43,6 +43,18 @@ The API key.
 ## provider_username
 _This variable is currently unused._
 
+## worker_node_count
+The number of worker nodes in the default worker node pool.
+
+## worker_node_memory
+The minimum amount of memory (in megabytes) for each node in the default worker node pool.
+
+## worker_node_name
+The name of the default worker node pool.
+
+## worker_node_processors
+The minimum number of processors for each node in the default worker node pool.
+
 # Output Variables
 
 ## api_ca_certificate
@@ -116,6 +128,24 @@ The token for the Cluster Admin service account.
 
 ## worker_node_certificate_key
 The certificate key for use when joining the Kubernetes cluster.
+
+## worker_node_private_addresses
+The private IP addresses of the worker nodes.
+
+## worker_node_public_addresses
+The public IP addresses of the worker nodes.
+
+## worker_node_ssh_private_key
+The private SSH key for the worker nodes.
+
+## worker_node_ssh_private_key_file
+The relative path to the private SSH key for the worker nodes.
+
+## worker_node_ssh_public_key
+The public SSH key for the worker nodes.
+
+## worker_node_ssh_public_key_file
+The relative path to the public SSH key for the worker nodes.
 
 ## worker_node_token
 The token for use when joining the Kubernetes cluster.

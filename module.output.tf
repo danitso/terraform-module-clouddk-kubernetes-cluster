@@ -124,6 +124,37 @@ output "worker_node_certificate_key" {
   sensitive   = true
 }
 
+output "worker_node_private_addresses" {
+  description = "The private IP addresses of the worker nodes"
+  value       = module.worker_nodes.*.worker_node_private_addresses
+}
+
+output "worker_node_public_addresses" {
+  description = "The public IP addresses of the worker nodes"
+  value       = module.worker_nodes.*.worker_node_public_addresses
+}
+
+output "worker_node_ssh_private_key" {
+  description = "The private SSH key for the worker nodes"
+  value       = module.worker_nodes.worker_node_ssh_private_key
+  sensitive   = true
+}
+
+output "worker_node_ssh_private_key_file" {
+  description = "The relative path to the private SSH key for the worker nodes"
+  value       = local_file.worker_node_private_ssh_key.filename
+}
+
+output "worker_node_ssh_public_key" {
+  description = "The public SSH key for the worker nodes"
+  value       = module.worker_nodes.worker_node_ssh_public_key
+}
+
+output "worker_node_ssh_public_key_file" {
+  description = "The relative path to the public SSH key for the worker nodes"
+  value       = local_file.worker_node_public_ssh_key.filename
+}
+
 output "worker_node_token" {
   description = "The token for use when joining the Kubernetes cluster"
   value       = join(".", random_string.kubernetes_bootstrap_token.*.result)

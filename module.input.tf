@@ -1,6 +1,6 @@
 variable "cluster_name" {
   description = "The name of the cluster"
-  default     = "my-new-cluster"
+  default     = "danitso-kubernetes-cluster"
 }
 
 variable "load_balancer_count" {
@@ -50,4 +50,24 @@ variable "provider_token" {
 variable "provider_username" {
   description = "This variable is currently unused"
   default     = ""
+}
+
+variable "worker_node_count" {
+  description = "The number of worker nodes in the default worker node pool"
+  default     = 2
+}
+
+variable "worker_node_memory" {
+  description = "The minimum amount of memory (in megabytes) for each node in the default worker node pool"
+  default     = 4096
+}
+
+variable "worker_node_name" {
+  description = "The name of the default worker node pool"
+  default     = "default"
+}
+
+variable "worker_node_processors" {
+  description = "The minimum number of processors for each node in the default worker node pool"
+  default     = 2
 }
