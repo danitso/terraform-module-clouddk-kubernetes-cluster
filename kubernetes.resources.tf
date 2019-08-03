@@ -2,7 +2,6 @@ resource "null_resource" "kubernetes_master_install" {
   count = max(var.master_node_count, 1)
 
   depends_on = [
-    "clouddk_server.master_node",
     "null_resource.docker",
   ]
 
@@ -41,7 +40,6 @@ resource "null_resource" "kubernetes_master_install" {
 
 resource "null_resource" "kubernetes_master_init" {
   depends_on = [
-    "clouddk_server.master_node",
     "null_resource.kubernetes_master_install",
   ]
 
@@ -113,8 +111,6 @@ resource "null_resource" "kubernetes_master_join" {
   count = max(var.master_node_count - 1, 0)
 
   depends_on = [
-    "clouddk_server.master_node",
-    "null_resource.kubernetes_master_install",
     "null_resource.kubernetes_master_init",
   ]
 
@@ -138,9 +134,6 @@ resource "null_resource" "kubernetes_master_join" {
 
 resource "null_resource" "kubernetes_network" {
   depends_on = [
-    "clouddk_server.master_node",
-    "null_resource.kubernetes_master_install",
-    "null_resource.kubernetes_master_init",
     "null_resource.kubernetes_master_join",
   ]
 

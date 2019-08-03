@@ -33,6 +33,52 @@ resource "clouddk_server" "master_node" {
   }
 }
 
+resource "null_resource" "master_node_tuning" {
+  count = max(var.master_node_count, 1)
+
+  depends_on = ["clouddk_server.master_node"]
+
+  connection {
+    type  = "ssh"
+    agent = false
+
+    host        = "${element(flatten(clouddk_server.master_node[count.index].network_interface_addresses), 0)}"
+    port        = 22
+    user        = "root"
+    private_key = tls_private_key.master_node_ssh.private_key_pem
+    timeout     = "5m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo Creating missing directories",
+      "mkdir -p /etc/security/ /etc/sysctl.d /etc/systemd/system/haproxy.service.d",
+    ]
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/etc/security/limits.conf"
+    destination = "/etc/security/limits.conf"
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/etc/sysctl.d/20-maximum-performance.conf"
+    destination = "/etc/sysctl.d/20-maximum-performance.conf"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo Reloading the system properties",
+      "sysctl --system",
+    ]
+  }
+
+  triggers = {
+    limits_conf_hash  = "${md5(file("${path.module}/etc/security/limits.conf"))}"
+    sysctl_conf_hash  = "${md5(file("${path.module}/etc/sysctl.d/20-maximum-performance.conf"))}"
+  }
+}
+
 resource "local_file" "master_node_private_ssh_key" {
   filename          = "keys/id_rsa_master_node"
   sensitive_content = tls_private_key.master_node_ssh.private_key_pem

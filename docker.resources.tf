@@ -2,7 +2,7 @@ resource "null_resource" "docker" {
   count = max(var.master_node_count, 1)
 
   depends_on = [
-    "clouddk_server.master_node",
+    "null_resource.master_node_tuning",
   ]
 
   connection {
