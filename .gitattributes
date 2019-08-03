@@ -1,0 +1,6 @@
+# Perform line feed normalization on text files.
+*               text=auto
+
+# Specify which line feed character sequence to use for specific files.
+*.conf  text    eol=lf
+*.sh    text    eol=lf
