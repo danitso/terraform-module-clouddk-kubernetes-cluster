@@ -11,7 +11,7 @@ module "worker_nodes" {
   worker_node_certificate_key = random_id.kubernetes_certificate_key.hex
   worker_node_count           = var.worker_node_count
   worker_node_memory          = var.worker_node_memory
-  worker_node_name            = var.worker_node_name
+  worker_node_name            = "${var.worker_node_name}${replace(null_resource.kubernetes_network.id, "/.*/", "")}"
   worker_node_processors      = var.worker_node_processors
   worker_node_token           = join(".", random_string.kubernetes_bootstrap_token.*.result)
 }
