@@ -126,12 +126,12 @@ output "worker_node_certificate_key" {
 
 output "worker_node_private_addresses" {
   description = "The private IP addresses of the worker nodes"
-  value       = module.worker_nodes.*.worker_node_private_addresses
+  value       = module.worker_nodes.worker_node_private_addresses
 }
 
 output "worker_node_public_addresses" {
   description = "The public IP addresses of the worker nodes"
-  value       = module.worker_nodes.*.worker_node_public_addresses
+  value       = module.worker_nodes.worker_node_public_addresses
 }
 
 output "worker_node_ssh_private_key" {
