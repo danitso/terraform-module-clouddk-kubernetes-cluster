@@ -100,6 +100,7 @@ EOT
 
   provisioner "remote-exec" {
     inline = [
+      "echo Load Balancer Addresses: ${join(", ", module.load_balancers.load_balancer_public_addresses)}",
       "tr -d '\\r' < /tmp/config.new.yaml > /tmp/config.yaml",
       "rm -f /tmp/config.new.yaml",
       "kubeadm init --config=/tmp/config.yaml --upload-certs",
