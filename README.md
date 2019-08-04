@@ -1,7 +1,7 @@
 # Kubernetes Cluster
 Terraform Module for creating a Kubernetes Cluster on Cloud.dk
 
-_**NOTE**: This module is currently under development._
+> **WARNING:** This project is under active development and should be considered alpha.
 
 # Requirements
 - [Terraform](https://www.terraform.io/downloads.html) 0.12+
