@@ -51,7 +51,7 @@ output "load_balancer_ssh_private_key" {
 
 output "load_balancer_ssh_private_key_file" {
   description = "The relative path to the private SSH key for the load balancers"
-  value       = local_file.load_balancer_private_ssh_key.filename
+  value       = module.load_balancers.load_balancer_ssh_private_key_file
 }
 
 output "load_balancer_ssh_public_key" {
@@ -61,7 +61,7 @@ output "load_balancer_ssh_public_key" {
 
 output "load_balancer_ssh_public_key_file" {
   description = "The relative path to the public SSH key for the load balancers"
-  value       = local_file.load_balancer_public_ssh_key.filename
+  value       = module.load_balancers.load_balancer_ssh_public_key_file
 }
 
 output "load_balancer_stats_password" {
@@ -142,7 +142,7 @@ output "worker_node_ssh_private_key" {
 
 output "worker_node_ssh_private_key_file" {
   description = "The relative path to the private SSH key for the worker nodes"
-  value       = local_file.worker_node_private_ssh_key.filename
+  value       = module.worker_nodes.worker_node_ssh_private_key_file
 }
 
 output "worker_node_ssh_public_key" {
@@ -152,7 +152,7 @@ output "worker_node_ssh_public_key" {
 
 output "worker_node_ssh_public_key_file" {
   description = "The relative path to the public SSH key for the worker nodes"
-  value       = local_file.worker_node_public_ssh_key.filename
+  value       = module.worker_nodes.worker_node_ssh_public_key_file
 }
 
 output "worker_node_token" {
