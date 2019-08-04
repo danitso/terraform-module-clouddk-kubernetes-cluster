@@ -25,12 +25,12 @@ variable "master_node_count" {
 
 variable "master_node_memory" {
   description = "The minimum amount of memory (in megabytes) for each master node"
-  default     = 8192
+  default     = 4096
 }
 
 variable "master_node_processors" {
   description = "The minimum number of processors (cores) for each master node"
-  default     = 4
+  default     = 2
 }
 
 variable "provider_location" {
