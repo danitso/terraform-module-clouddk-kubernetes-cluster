@@ -77,7 +77,7 @@ networking:
   podSubnet: 10.244.0.0/16
 apiServer:
   certSANs:
-  - ${join("\n- ", module.load_balancers.load_balancer_public_addresses)}
+  - ${join("\n  - ", module.load_balancers.load_balancer_public_addresses)}
 
   # https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/
   extraArgs:
@@ -100,7 +100,6 @@ EOT
 
   provisioner "remote-exec" {
     inline = [
-      "echo Load Balancer Addresses: ${join(", ", module.load_balancers.load_balancer_public_addresses)}",
       "tr -d '\\r' < /tmp/config.new.yaml > /tmp/config.yaml",
       "rm -f /tmp/config.new.yaml",
       "kubeadm init --config=/tmp/config.yaml --upload-certs",
