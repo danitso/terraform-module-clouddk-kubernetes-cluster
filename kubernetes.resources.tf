@@ -74,7 +74,7 @@ clusterName: ${var.cluster_name}
 controlPlaneEndpoint: ${element(module.load_balancers.load_balancer_public_addresses, 0)}:6443
 certificatesDir: /etc/kubernetes/pki
 networking:
-  podSubnet: 10.244.0.0/16
+  podSubnet: 10.32.0.0/12
 apiServer:
   certSANs:
   - ${join("\n  - ", module.load_balancers.load_balancer_public_addresses)}
