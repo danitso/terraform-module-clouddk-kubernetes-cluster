@@ -154,7 +154,7 @@ resource "null_resource" "kubernetes_network" {
 
 resource "null_resource" "kubernetes_cloud_controller" {
   depends_on = [
-    "null_resource.kubernetes_master_join",
+    "null_resource.kubernetes_network",
   ]
 
   connection {
