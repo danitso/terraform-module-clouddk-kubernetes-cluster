@@ -177,10 +177,10 @@ metadata:
   namespace: kube-system
 type: Opaque
 data:
-  CLOUDDK_API_ENDPOINT: 'https://api.cloud.dk/v1'
-  CLOUDDK_API_KEY: '${var.provider_token}'
-  CLOUDDK_SSH_PRIVATE_KEY: '${base64encode(module.load_balancers.load_balancer_ssh_private_key)}'
-  CLOUDDK_SSH_PUBLIC_KEY: '${base64encode(module.load_balancers.load_balancer_ssh_public_key)}'
+  CLOUDDK_API_ENDPOINT: ${base64encode("https://api.cloud.dk/v1")}
+  CLOUDDK_API_KEY: ${base64encode(var.provider_token)}
+  CLOUDDK_SSH_PRIVATE_KEY: ${base64encode(base64encode(module.load_balancers.load_balancer_ssh_private_key))}
+  CLOUDDK_SSH_PUBLIC_KEY: ${base64encode(base64encode(module.load_balancers.load_balancer_ssh_public_key))}
 EOT
     destination = "/tmp/clouddk.config.yaml"
   }
