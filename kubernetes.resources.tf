@@ -18,6 +18,7 @@ resource "null_resource" "kubernetes_master_install" {
 
   provisioner "remote-exec" {
     inline = [
+      "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
       "curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -",
       "echo 'deb http://apt.kubernetes.io kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes.list",
       "DEBIAN_FRONTEND=noninteractive apt-get update",
@@ -68,6 +69,7 @@ localAPIEndpoint:
 nodeRegistration:
   kubeletExtraArgs:
     cloud-provider: "external"
+    node-ip: "${element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)}"
 certificateKey: "${random_id.kubernetes_certificate_key.hex}"
 ---
 apiVersion: kubeadm.k8s.io/v1beta1
@@ -123,7 +125,7 @@ resource "null_resource" "kubernetes_master_join" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo 'KUBELET_EXTRA_ARGS=--cloud-provider=external' >> /etc/default/kubelet",
+      "echo 'KUBELET_EXTRA_ARGS=--cloud-provider=external --node-ip=${element(flatten(clouddk_server.master_node[count.index + 1].network_interface_addresses), 0)}' >> /etc/default/kubelet",
       "kubeadm join ${element(module.load_balancers.load_balancer_public_addresses, 0)}:6443 --token ${join(".", random_string.kubernetes_bootstrap_token.*.result)} --discovery-token-unsafe-skip-ca-verification --control-plane --certificate-key ${random_id.kubernetes_certificate_key.hex}",
     ]
   }

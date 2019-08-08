@@ -90,7 +90,8 @@ resource "local_file" "master_node_public_ssh_key" {
 }
 
 resource "random_string" "master_node_root_password" {
-  length = 64
+  length  = 64
+  special = false
 }
 
 resource "tls_private_key" "master_node_ssh" {
