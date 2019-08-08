@@ -82,15 +82,12 @@ apiServer:
   certSANs:
   - ${join("\n  - ", module.load_balancers.load_balancer_public_addresses)}
   extraArgs:
-    cloud-provider: "external"
     max-requests-inflight: "1000"
     max-mutating-requests-inflight: "500"
     default-watch-cache-size: "500"
     watch-cache-sizes: "persistentvolumeclaims#1000,persistentvolumes#1000"
-
 controllerManager:
   extraArgs:
-    cloud-provider: "external"
     cluster-cidr: "10.32.0.0/12"
     deployment-controller-sync-period: "50s"
 EOT
