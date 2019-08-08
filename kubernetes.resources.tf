@@ -65,6 +65,9 @@ bootstrapTokens:
 localAPIEndpoint:
   advertiseAddress: ${element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)}
   bindPort: 6443
+nodeRegistration:
+  kubeletExtraArgs:
+    cloud-provider: "external"
 certificateKey: "${random_id.kubernetes_certificate_key.hex}"
 ---
 apiVersion: kubeadm.k8s.io/v1beta1
@@ -79,6 +82,7 @@ apiServer:
   certSANs:
   - ${join("\n  - ", module.load_balancers.load_balancer_public_addresses)}
   extraArgs:
+    cloud-provider: "external"
     max-requests-inflight: "1000"
     max-mutating-requests-inflight: "500"
     default-watch-cache-size: "500"
