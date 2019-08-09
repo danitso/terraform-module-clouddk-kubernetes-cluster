@@ -22,8 +22,9 @@ resource "clouddk_server" "master_node" {
 
   provisioner "remote-exec" {
     inline = [
-      "apt-get update",
-      "DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
+      "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
+      "DEBIAN_FRONTEND=noninteractive apt-get -q update",
+      "DEBIAN_FRONTEND=noninteractive apt-get -q install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
       "swapoff -a",
       "sed -i '/ swap / s/^/#/' /etc/fstab",
       "echo '${tls_private_key.master_node_ssh.public_key_openssh}' >> ~/.ssh/authorized_keys",

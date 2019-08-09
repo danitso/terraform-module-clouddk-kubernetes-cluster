@@ -133,33 +133,9 @@ resource "null_resource" "kubernetes_master_join" {
   }
 }
 
-resource "null_resource" "kubernetes_network" {
-  depends_on = [
-    "null_resource.kubernetes_master_join",
-  ]
-
-  connection {
-    type  = "ssh"
-    agent = false
-
-    host        = element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)
-    port        = 22
-    user        = "root"
-    private_key = tls_private_key.master_node_ssh.private_key_pem
-    timeout     = "5m"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "export KUBECONFIG=/etc/kubernetes/admin.conf",
-      "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')",
-    ]
-  }
-}
-
 resource "null_resource" "kubernetes_cloud_controller" {
   depends_on = [
-    "null_resource.kubernetes_network",
+    "null_resource.kubernetes_master_join",
   ]
 
   connection {
@@ -196,6 +172,30 @@ EOT
       "kubectl apply -f /tmp/clouddk.config.yaml",
       "rm -f /tmp/clouddk.config.yaml",
       "kubectl apply -f https://raw.githubusercontent.com/danitso/clouddk-cloud-controller-manager/master/deployment.yaml",
+    ]
+  }
+}
+
+resource "null_resource" "kubernetes_network" {
+  depends_on = [
+    "null_resource.kubernetes_cloud_controller",
+  ]
+
+  connection {
+    type  = "ssh"
+    agent = false
+
+    host        = element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)
+    port        = 22
+    user        = "root"
+    private_key = tls_private_key.master_node_ssh.private_key_pem
+    timeout     = "5m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "export KUBECONFIG=/etc/kubernetes/admin.conf",
+      "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')",
     ]
   }
 }
