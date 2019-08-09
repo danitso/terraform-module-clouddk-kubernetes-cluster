@@ -21,8 +21,8 @@ resource "null_resource" "kubernetes_master_install" {
       "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
       "curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -",
       "echo 'deb http://apt.kubernetes.io kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes.list",
-      "DEBIAN_FRONTEND=noninteractive apt-get update",
-      "DEBIAN_FRONTEND=noninteractive apt-get install -y kubelet kubeadm kubectl",
+      "DEBIAN_FRONTEND=noninteractive apt-get -q update",
+      "DEBIAN_FRONTEND=noninteractive apt-get -q install -y kubelet kubeadm kubectl",
       "mkdir -p /var/lib/kubelet/pki",
       "mkdir -p /etc/kubernetes/pki",
     ]
@@ -69,6 +69,8 @@ localAPIEndpoint:
 nodeRegistration:
   kubeletExtraArgs:
     cloud-provider: "external"
+    container-log-max-files: "2"
+    container-log-max-size: "64Mi"
     node-ip: "${element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)}"
 certificateKey: "${random_id.kubernetes_certificate_key.hex}"
 ---
@@ -125,7 +127,7 @@ resource "null_resource" "kubernetes_master_join" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo 'KUBELET_EXTRA_ARGS=--cloud-provider=external --node-ip=${element(flatten(clouddk_server.master_node[count.index + 1].network_interface_addresses), 0)}' >> /etc/default/kubelet",
+      "echo 'KUBELET_EXTRA_ARGS=--cloud-provider=external --container-log-max-files=2 --container-log-max-size=64Mi --node-ip=${element(flatten(clouddk_server.master_node[count.index + 1].network_interface_addresses), 0)}' >> /etc/default/kubelet",
       "kubeadm join ${element(module.load_balancers.load_balancer_public_addresses, 0)}:6443 --token ${join(".", random_string.kubernetes_bootstrap_token.*.result)} --discovery-token-unsafe-skip-ca-verification --control-plane --certificate-key ${random_id.kubernetes_certificate_key.hex}",
     ]
   }

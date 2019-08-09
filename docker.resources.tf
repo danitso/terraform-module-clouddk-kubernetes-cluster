@@ -33,7 +33,8 @@ resource "null_resource" "docker" {
   "exec-opts": ["native.cgroupdriver=systemd"],
   "log-driver": "json-file",
   "log-opts": {
-    "max-size": "100m"
+    "max-file": "2",
+    "max-size": "64m"
   },
   "storage-driver": "overlay2"
 }
