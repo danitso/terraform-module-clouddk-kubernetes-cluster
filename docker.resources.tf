@@ -22,8 +22,8 @@ resource "null_resource" "docker" {
       "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
       "apt-key fingerprint 0EBFCD88",
       "add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable'",
-      "DEBIAN_FRONTEND=noninteractive apt-get update",
-      "DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce=5:18.09.8~3-0~ubuntu-xenial docker-ce-cli=5:18.09.8~3-0~ubuntu-xenial containerd.io",
+      "DEBIAN_FRONTEND=noninteractive apt-get -q update",
+      "DEBIAN_FRONTEND=noninteractive apt-get -q install -y docker-ce=5:18.09.8~3-0~ubuntu-xenial docker-ce-cli=5:18.09.8~3-0~ubuntu-xenial containerd.io",
     ]
   }
 
