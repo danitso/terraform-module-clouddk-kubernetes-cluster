@@ -37,7 +37,7 @@ You can create a new cluster with this configuration by following these steps:
     docker run -v .:/workspace -it --rm danitso/terraform:0.12 init
     ```
 
-    or
+    or using `cmd.exe`:
 
     ```batchfile
     docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 init
@@ -49,7 +49,7 @@ You can create a new cluster with this configuration by following these steps:
     docker run -v .:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
     ```
 
-    or
+    or using `cmd.exe`:
 
     ```batchfile
     docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
