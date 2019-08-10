@@ -14,6 +14,8 @@ provider "random" {
   version = "~> 2.1"
 }
 
+provider "sftp" {}
+
 provider "tls" {
   version = "~> 2.0"
 }

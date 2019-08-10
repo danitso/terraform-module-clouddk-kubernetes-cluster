@@ -80,7 +80,6 @@ output "load_balancer_stats_username" {
   value       = module.load_balancers.load_balancer_stats_username
 }
 
-
 output "master_node_private_addresses" {
   description = "The private IP addresses of the master nodes"
   value       = []
@@ -114,7 +113,7 @@ output "master_node_ssh_public_key_file" {
 
 output "service_account_token" {
   description = "The token for the Cluster Admin service account"
-  value       = ""
+  value       = trimspace(data.kubernetes_token.contents)
   sensitive   = true
 }
 

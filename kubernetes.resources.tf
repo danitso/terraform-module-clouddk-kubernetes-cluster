@@ -103,6 +103,8 @@ EOT
       "tr -d '\\r' < /tmp/config.new.yaml > /tmp/config.yaml",
       "rm -f /tmp/config.new.yaml",
       "kubeadm init --config=/tmp/config.yaml --upload-certs",
+      "export KUBECONFIG=/etc/kubernetes/admin.conf",
+      "kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d' ') | grep -E '^token' | cut -f2 -d':' | tr -d ' ' > /etc/kubernetes/token.txt",
     ]
   }
 }
