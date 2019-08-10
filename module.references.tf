@@ -30,7 +30,7 @@ module "worker_nodes" {
   master                = false
   node_count            = var.worker_node_count
   node_memory           = var.worker_node_memory
-  node_pool_name        = "default"
+  node_pool_name        = var.worker_node_pool_name
   node_processors       = var.worker_node_processors
   provider_location     = var.provider_location
   provider_token        = var.provider_token

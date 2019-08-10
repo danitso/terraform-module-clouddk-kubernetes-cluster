@@ -75,8 +75,8 @@ variable "worker_node_memory" {
   type        = "string"
 }
 
-variable "worker_node_name" {
-  description = "The name of the default worker node pool"
+variable "worker_node_pool_name" {
+  description = "The name of the worker node pool"
   default     = "default"
   type        = "string"
 }

@@ -64,28 +64,42 @@ _NOTE: The `danitso/terraform` image contains all the custom providers developed
 ## cluster_name
 The name of the cluster.
 
-_**NOTE:** The name will be truncated to 32 characters._
+**Default**: danitso-kubernetes-cluster
 
 ## load_balancer_count
 The number of load balancers.
 
+**Default**: 1
+
 ## load_balancer_memory
 The minimum amount of memory (in megabytes) for each load balancer.
+
+**Default**: 1024
 
 ## load_balancer_processors
 The minimum number of processors (cores) for each load balancer.
 
+**Default**: 1
+
 ## master_node_count
 The number of master nodes.
+
+**Default**: 3
 
 ## master_node_memory
 The minimum amount of memory (in megabytes) for each master node.
 
+**Default**: 4096
+
 ## master_node_processors
 The minimum number of processors (cores) for each master node.
 
+**Default**: 2
+
 ## provider_location
 The cluster's geographical location.
+
+**Default**: dk1
 
 ## provider_password
 _This variable is currently unused._
@@ -99,14 +113,22 @@ _This variable is currently unused._
 ## worker_node_count
 The number of worker nodes in the default worker node pool.
 
+**Default**: 2
+
 ## worker_node_memory
 The minimum amount of memory (in megabytes) for each node in the default worker node pool.
 
-## worker_node_name
-The name of the default worker node pool.
+**Default**: 4096
+
+## worker_node_pool_name
+The name of the worker node pool.
+
+**Default**: default
 
 ## worker_node_processors
 The minimum number of processors for each node in the default worker node pool.
+
+**Default**: 2
 
 # Output Variables
 
