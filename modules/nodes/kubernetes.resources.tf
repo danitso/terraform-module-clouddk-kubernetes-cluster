@@ -149,6 +149,7 @@ nodeRegistration:
     container-log-max-files: "2"
     container-log-max-size: "64Mi"
     node-ip: "${element(flatten(clouddk_server.node[0].network_interface_addresses), 0)}"
+    node-labels: "kubernetes.cloud.dk/node-pool=${var.node_pool_name}"
 certificateKey: "${local.kubernetes_certificate_key}"
 ---
 apiVersion: kubeadm.k8s.io/v1beta1
@@ -217,7 +218,7 @@ resource "null_resource" "kubernetes_join" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo 'KUBELET_EXTRA_ARGS=--cloud-provider=external --container-log-max-files=2 --container-log-max-size=64Mi --node-ip=${element(flatten(clouddk_server.node[(var.master ? count.index + 1 : count.index)].network_interface_addresses), 0)}' >> /etc/default/kubelet",
+      "echo 'KUBELET_EXTRA_ARGS=--cloud-provider=external --container-log-max-files=2 --container-log-max-size=64Mi --node-ip=${element(flatten(clouddk_server.node[(var.master ? count.index + 1 : count.index)].network_interface_addresses), 0)} --node-labels=kubernetes.cloud.dk/node-pool=${var.node_pool_name}' >> /etc/default/kubelet",
       "kubeadm join ${element(local.kubernetes_api_addresses, 0)}:6443 --token ${local.kubernetes_bootstrap_token} --discovery-token-unsafe-skip-ca-verification ${var.master ? "--control-plane" : ""} --certificate-key ${local.kubernetes_certificate_key}",
     ]
   }
@@ -263,6 +264,16 @@ EOT
       "kubectl apply -f /tmp/clouddk.config.yaml",
       "rm -f /tmp/clouddk.config.yaml",
       "kubectl apply -f https://raw.githubusercontent.com/danitso/clouddk-cloud-controller-manager/master/deployment.yaml",
+    ]
+  }
+
+  provisioner "remote-exec" {
+    when   = "destroy"
+    inline = [
+      "export KUBECONFIG=/etc/kubernetes/admin.conf",
+      "echo Deleting all service definitions to force load balancers to be destroyed",
+      "kubectl delete svc --all --all-namespaces",
+      "while kubectl get svc --all-namespaces | grep -q -i loadbalancer; do sleep 1; done",
     ]
   }
 }
