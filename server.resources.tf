@@ -74,6 +74,17 @@ resource "null_resource" "master_node_tuning" {
     ]
   }
 
+  provisioner "file" {
+    source      = "${path.module}/etc/systemd/network/10-weave.network"
+    destination = "/etc/systemd/network/10-weave.network"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "systemctl restart systemd-networkd",
+    ]
+  }
+
   triggers = {
     limits_conf_hash = "${md5(file("${path.module}/etc/security/limits.conf"))}"
     sysctl_conf_hash = "${md5(file("${path.module}/etc/sysctl.d/20-maximum-performance.conf"))}"
