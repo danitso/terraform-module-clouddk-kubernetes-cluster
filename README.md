@@ -138,6 +138,15 @@ The CA certificate for the Kubernetes API.
 ## api_endpoints
 The endpoints for the Kubernetes API.
 
+## api_load_balancing_stats_password
+The password for the Kubernetes API load balancing statistics page.
+
+## api_load_balancing_stats_urls
+The Kubernetes API load balancing statistics URLs.
+
+## api_load_balancing_stats_username
+The username for the Kubernetes API load balancing statistics page.
+
 ## config_file
 The relative path to the configuration file for use with `kubectl`.
 

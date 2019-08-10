@@ -103,11 +103,13 @@ resource "null_resource" "load_balancer_tuning" {
 # STEP 2: Generate credentials for HAProxy statistics
 #===============================================================================
 resource "random_string" "load_balancer_stats_password" {
+  count   = "${var.master ? 1 : 0}"
   length  = 32
   special = false
 }
 
 resource "random_string" "load_balancer_stats_username" {
+  count   = "${var.master ? 1 : 0}"
   length  = 16
   special = false
 }
@@ -137,7 +139,7 @@ resource "null_resource" "load_balancer_configuration" {
   provisioner "remote-exec" {
     inline = [
       "echo Updating the HAProxy configuration file",
-      "bash /tmp/haproxy-cfg.sh '${join(" ", local.load_balancer_listener_addresses)}' '${join(" ", local.load_balancer_listener_ports)}' '${join(" ", local.load_balancer_listener_timeouts)}' '${join(" ", local.load_balancer_target_addresses)}' '${join(" ", local.load_balancer_target_ports)}' '${join(" ", local.load_balancer_target_timeouts)}' '${random_string.load_balancer_stats_username.result}' '${random_string.load_balancer_stats_password.result}' > /etc/haproxy/haproxy.cfg",
+      "bash /tmp/haproxy-cfg.sh '${join(" ", local.load_balancer_listener_addresses)}' '${join(" ", local.load_balancer_listener_ports)}' '${join(" ", local.load_balancer_listener_timeouts)}' '${join(" ", local.load_balancer_target_addresses)}' '${join(" ", local.load_balancer_target_ports)}' '${join(" ", local.load_balancer_target_timeouts)}' '${element(concat(random_string.load_balancer_stats_username.*.result, list("")), 0)}' '${element(concat(random_string.load_balancer_stats_password.*.result, list("")), 0)}' > /etc/haproxy/haproxy.cfg",
       "echo Restarting the HAProxy service",
       "systemctl restart haproxy.service",
     ]
@@ -148,8 +150,8 @@ resource "null_resource" "load_balancer_configuration" {
     listener_addresses = "${join("", local.load_balancer_listener_addresses)}"
     listener_ports     = "${join("", local.load_balancer_listener_ports)}"
     listener_timeouts  = "${join("", local.load_balancer_listener_timeouts)}"
-    stats_password     = "${md5(random_string.load_balancer_stats_password.result)}"
-    stats_username     = "${random_string.load_balancer_stats_username.result}"
+    stats_password     = "${md5(element(concat(random_string.load_balancer_stats_password.*.result, list("")), 0))}"
+    stats_username     = "${element(concat(random_string.load_balancer_stats_username.*.result, list("")), 0)}"
     target_addresses   = "${join("", local.load_balancer_target_addresses)}"
     target_ports       = "${join("", local.load_balancer_target_ports)}"
     targer_timeouts    = "${join("", local.load_balancer_target_timeouts)}"

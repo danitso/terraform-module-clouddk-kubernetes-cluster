@@ -8,6 +8,22 @@ output "api_endpoints" {
   value       = module.master_nodes.api_endpoints
 }
 
+output "api_load_balancing_stats_password" {
+  description = "The password for the Kubernetes API load balancing statistics page"
+  value       = module.master_nodes.api_load_balancing_stats_password
+  sensitive   = true
+}
+
+output "api_load_balancing_stats_urls" {
+  description = "The Kubernetes API load balancing statistics URLs"
+  value       = module.master_nodes.api_load_balancing_stats_urls
+}
+
+output "api_load_balancing_stats_username" {
+  description = "The username for the Kubernetes API load balancing statistics page"
+  value       = module.master_nodes.api_load_balancing_stats_username
+}
+
 output "config_file" {
   description = "The absolute path to the Kubernetes configuration file for use with kubectl"
   value       = module.master_nodes.config_file

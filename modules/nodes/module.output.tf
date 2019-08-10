@@ -13,6 +13,22 @@ output "api_endpoints" {
   value       = local.kubernetes_api_endpoints
 }
 
+output "api_load_balancing_stats_password" {
+  description = "The password for the API load balancing statistics page"
+  value       = element(concat(random_string.load_balancer_stats_password.*.result, list("")), 0)
+  sensitive   = true
+}
+
+output "api_load_balancing_stats_urls" {
+  description = "The API load balancing statistics URLs"
+  value       = formatlist("http://%s:61200/load-balancer-stats", local.kubernetes_api_addresses)
+}
+
+output "api_load_balancing_stats_username" {
+  description = "The username for the API load balancing statistics page"
+  value       = element(concat(random_string.load_balancer_stats_username.*.result, list("")), 0)
+}
+
 output "api_ports" {
   description = "The API ports"
   value       = local.kubernetes_api_ports
