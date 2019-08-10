@@ -5,6 +5,8 @@ Terraform Module for creating a Kubernetes Cluster on Cloud.dk
 
 # Requirements
 - [Terraform](https://www.terraform.io/downloads.html) 0.12+
+- [Terraform Provider for Cloud.dk](https://github.com/danitso/terraform-provider-clouddk) 0.3+
+- [Terraform Provider for SFTP](https://github.com/danitso/terraform-provider-sftp) 0.1+
 
 # Input Variables
 
