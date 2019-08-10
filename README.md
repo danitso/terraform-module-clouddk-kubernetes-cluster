@@ -8,6 +8,57 @@ Terraform Module for creating a Kubernetes Cluster on Cloud.dk
 - [Terraform Provider for Cloud.dk](https://github.com/danitso/terraform-provider-clouddk) 0.3+
 - [Terraform Provider for SFTP](https://github.com/danitso/terraform-provider-sftp) 0.1+
 
+# Getting started
+
+The default cluster configuration has the following specifications, which is only recommended for development purposes:
+
+| Node type           | Node count | Node processors | Node memory |
+| --------------------|-----------:|----------------:|------------:|
+| Load Balancer (API) | 1          | 1               | 1024 MB     |
+| Master              | 3          | 2               | 4096 MB     |
+| Worker              | 2          | 2               | 4096 MB     |
+
+You can create a new cluster with this configuration by following these steps:
+
+1. Create a new file called `kubernetes_cluster.tf` with the following contents:
+
+    ```hcl
+    module "kubernetes_cluster" {
+        source = "github.com/danitso/terraform-module-clouddk-kubernetes-cluster"
+
+        cluster_name   = "the-name-of-your-cluster-without-spaces-and-special-characters"
+        provider_token = "the API key from https://my.cloud.dk/account/api-key"
+    }
+    ```
+
+1. Initialize your workspace
+
+    ```bash
+    docker run -v .:/workspace -it --rm danitso/terraform:0.12 init
+    ```
+
+    or
+
+    ```batchfile
+    docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 init
+    ```
+
+1. Provision the resources
+
+    ```bash
+    docker run -v .:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
+    ```
+
+    or
+
+    ```batchfile
+    docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
+    ```
+
+You can modify the configuration by changing the [Input Variables](#input-variables) on the `module` block.
+
+_NOTE: The `danitso/terraform` image contains all the custom providers developed by Danitso. In case you do not want to use this image, you must manually download and install the required provider plug-ins listed under the [Requirements](#requirements) section._
+
 # Input Variables
 
 ## cluster_name
