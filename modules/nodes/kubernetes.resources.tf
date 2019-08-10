@@ -20,6 +20,7 @@ resource "null_resource" "kubernetes_install" {
     inline = [
       "export DEBIAN_FRONTEND=noninteractive",
       "while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done",
+      "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
       "curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -",
       "echo 'deb http://apt.kubernetes.io kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes.list",
       "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
