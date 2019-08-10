@@ -1,3 +1,8 @@
+resource "local_file" "kubernetes_config" {
+  filename          = "${path.module}/config/kubeconfig"
+  sensitive_content = local.kubernetes_config_raw
+}
+
 resource "null_resource" "kubernetes_master_install" {
   count = max(var.master_node_count, 1)
 
@@ -103,8 +108,6 @@ EOT
       "tr -d '\\r' < /tmp/config.new.yaml > /tmp/config.yaml",
       "rm -f /tmp/config.new.yaml",
       "kubeadm init --config=/tmp/config.yaml --upload-certs",
-      "export KUBECONFIG=/etc/kubernetes/admin.conf",
-      "kubectl describe secret $(kubectl get secrets | grep default | cut -f1 -d' ') | grep -E '^token' | cut -f2 -d':' | tr -d ' ' > /etc/kubernetes/token.txt",
     ]
   }
 }
@@ -198,6 +201,32 @@ resource "null_resource" "kubernetes_network" {
     inline = [
       "export KUBECONFIG=/etc/kubernetes/admin.conf",
       "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')",
+    ]
+  }
+}
+
+resource "null_resource" "kubernetes_service_account" {
+  depends_on = [
+    "null_resource.kubernetes_network",
+  ]
+
+  connection {
+    type  = "ssh"
+    agent = false
+
+    host        = element(flatten(clouddk_server.master_node[0].network_interface_addresses), 0)
+    port        = 22
+    user        = "root"
+    private_key = tls_private_key.master_node_ssh.private_key_pem
+    timeout     = "5m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "export KUBECONFIG=/etc/kubernetes/admin.conf",
+      "while ! kubectl create -n kube-system serviceaccount admin; do sleep 1; done",
+      "kubectl describe secret $(kubectl get secrets | grep admin | cut -f1 -d' ') | grep -E '^token' | cut -f2 -d':' | tr -d ' ' > /etc/kubernetes/token.txt",
+      "kubectl create clusterrolebinding permissive-binding --clusterrole=cluster-admin --user=admin --user=kubelet --group=system:serviceaccounts"
     ]
   }
 }

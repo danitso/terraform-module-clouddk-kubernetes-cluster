@@ -8,6 +8,6 @@ data "sftp_remote_file" "kubernetes_token" {
   path = "/etc/kubernetes/token.txt"
 
   triggers = {
-    init_id = null_resource.kubernetes_master_init.id
+    init_id = null_resource.kubernetes_service_account.id
   }
 }

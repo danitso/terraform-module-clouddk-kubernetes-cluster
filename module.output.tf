@@ -15,12 +15,13 @@ output "api_public_endpoints" {
 
 output "config_file" {
   description = "The absolute path to the Kubernetes configuration file for use with kubectl"
-  value       = ""
+  value       = local_file.kubernetes_config.filename
 }
 
 output "config_raw" {
   description = "The raw Kubernetes configuration"
-  value       = ""
+  value       = local.kubernetes_config_raw
+  sensitive   = true
 }
 
 output "load_balancer_private_addresses" {
@@ -113,7 +114,7 @@ output "master_node_ssh_public_key_file" {
 
 output "service_account_token" {
   description = "The token for the Cluster Admin service account"
-  value       = trimspace(data.kubernetes_token.contents)
+  value       = local.kubernetes_service_account_token
   sensitive   = true
 }
 
