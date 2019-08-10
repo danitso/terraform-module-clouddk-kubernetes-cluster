@@ -24,12 +24,12 @@ output "bootstrap_token" {
 }
 
 output "certificate_key" {
-  description = "The certificate key for the secret"
+  description = "The key for the certificate secret"
   value       = local.kubernetes_certificate_key
 }
 
 output "config_file" {
-  description = "The absolute path to the configuration file for use with kubectl"
+  description = "The relative path to the configuration file for use with kubectl"
   value       = element(concat(local_file.kubernetes_config.*.filename, list("")), 0)
 }
 
