@@ -22,7 +22,7 @@ resource "clouddk_server" "master_node" {
 
   provisioner "remote-exec" {
     inline = [
-      "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
+      "while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done",
       "DEBIAN_FRONTEND=noninteractive apt-get -q update",
       "DEBIAN_FRONTEND=noninteractive apt-get -q install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
       "swapoff -a",

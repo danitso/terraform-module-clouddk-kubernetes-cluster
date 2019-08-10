@@ -23,7 +23,7 @@ resource "null_resource" "kubernetes_master_install" {
 
   provisioner "remote-exec" {
     inline = [
-      "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
+      "while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done",
       "curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -",
       "echo 'deb http://apt.kubernetes.io kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes.list",
       "DEBIAN_FRONTEND=noninteractive apt-get -q update",
