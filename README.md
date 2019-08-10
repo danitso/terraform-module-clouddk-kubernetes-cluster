@@ -1,5 +1,5 @@
 # Kubernetes Cluster
-Terraform Module for creating a Kubernetes Cluster on Cloud.dk
+Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.dk)
 
 > **WARNING:** This project is under active development and should be considered alpha.
 
@@ -58,6 +58,14 @@ You can create a new cluster with this configuration by following these steps:
 You can modify the configuration by changing the [Input Variables](#input-variables) on the `module` block.
 
 _NOTE: The `danitso/terraform` image contains all the custom providers developed by Danitso. In case you do not want to use this image, you must manually download and install the required provider plug-ins listed under the [Requirements](#requirements) section._
+
+## Features
+
+### Cloud Controller Manager
+
+This module also provisions a Cloud Controller Manager for [Cloud.dk](https://cloud.dk) developed by Danitso. The controller adds support for services of type `LoadBalancer` as well as other important features.
+
+You can read more about the controller on the [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager) project page.
 
 ## Input Variables
 
