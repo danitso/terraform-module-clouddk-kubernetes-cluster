@@ -304,7 +304,10 @@ resource "null_resource" "kubernetes_network" {
   provisioner "remote-exec" {
     inline = [
       "export KUBECONFIG=/etc/kubernetes/admin.conf",
-      "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')'&'env.IPALLOC_INIT=observer",
+      "rm -f cni.yaml",
+      "wget -O cni.yaml https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')'&'known-peers=${join(",", flatten(clouddk_server.node.*.network_interface_addresses))}",
+      "kubectl apply -f cni.yaml",
+      "rm -f cni.yaml",
     ]
   }
 }
