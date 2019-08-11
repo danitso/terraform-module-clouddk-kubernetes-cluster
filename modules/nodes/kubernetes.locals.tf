@@ -1,9 +1,27 @@
 locals {
-  kubernetes_api_addresses         = compact(concat(flatten(clouddk_server.load_balancer.*.network_interface_addresses), list(var.master ? "" : var.control_plane_address)))
-  kubernetes_api_endpoints         = formatlist("https://%s:%s", local.kubernetes_api_addresses, local.kubernetes_api_ports)
-  kubernetes_api_ports             = compact(concat(flatten(random_shuffle.api_port_numbers.*.result), list(var.master ? "" : var.control_plane_port)))
-  kubernetes_bootstrap_token       = join(".", slice(concat(random_string.kubernetes_bootstrap_token.*.result, split(".", var.bootstrap_token), list("", "")), 0, 2))
-  kubernetes_certificate_key       = element(concat(random_id.kubernetes_certificate_key.*.hex, list(var.certificate_key)), 0)
+  kubernetes_api_addresses = concat(
+    slice(flatten(clouddk_server.load_balancer.*.network_interface_addresses), 0, (var.master ? length(flatten(clouddk_server.load_balancer.*.network_interface_addresses)) : 0)),
+    slice(var.api_addresses, 0, (var.master ? 0 : length(var.api_addresses)))
+  )
+  kubernetes_api_endpoints = formatlist("https://%s:%s", local.kubernetes_api_addresses, local.kubernetes_api_ports)
+  kubernetes_api_ports = concat(
+    slice(flatten(random_shuffle.api_ports.*.result), 0, (var.master ? length(flatten(random_shuffle.api_ports.*.result)) : 0)),
+    slice(var.api_ports, 0, (var.master ? 0 : length(var.api_ports)))
+  )
+  kubernetes_bootstrap_token = join(".", slice(concat(
+    random_string.kubernetes_bootstrap_token.*.result,
+    split(".", var.bootstrap_token),
+    list("", "")
+  ), 0, 2))
+  kubernetes_certificate_key = element(concat(random_id.kubernetes_certificate_key.*.hex, list(var.certificate_key)), 0)
+  kubernetes_control_plane_addresses = concat(
+    slice(flatten(clouddk_server.node.*.network_interface_addresses), 0, (var.master ? length(flatten(clouddk_server.node.*.network_interface_addresses)) : 0)),
+    slice(var.control_plane_addresses, 0, (var.master ? 0 : length(var.control_plane_addresses)))
+  )
+  kubernetes_control_plane_ports = concat(
+    slice(flatten(random_shuffle.control_plane_ports.*.result), 0, (var.master ? length(flatten(random_shuffle.control_plane_ports.*.result)) : 0)),
+    slice(var.control_plane_ports, 0, (var.master ? 0 : length(var.control_plane_ports)))
+  )
   kubernetes_service_account_token = trimspace(element(concat(data.sftp_remote_file.kubernetes_token.*.contents, list("")), 0))
 
   kubernetes_config_raw = <<EOF

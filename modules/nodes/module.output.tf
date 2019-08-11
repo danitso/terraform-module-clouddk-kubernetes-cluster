@@ -55,6 +55,16 @@ output "config_raw" {
   sensitive   = true
 }
 
+output "control_plane_addresses" {
+  description = "The control plane addresses"
+  value       = local.kubernetes_control_plane_addresses
+}
+
+output "control_plane_ports" {
+  description = "The control plane ports"
+  value       = local.kubernetes_control_plane_ports
+}
+
 output "initialized" {
   value = "1${replace(join(",", concat(
     null_resource.kubernetes_init.*.id,

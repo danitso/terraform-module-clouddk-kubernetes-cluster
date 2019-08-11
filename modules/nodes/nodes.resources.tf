@@ -96,3 +96,67 @@ resource "null_resource" "node_tuning" {
     sysctl_conf_hash = "${md5(file("${path.module}/etc/sysctl.d/20-maximum-performance.conf"))}"
   }
 }
+#===============================================================================
+# STEP 3: Create firewall rules for node servers
+#===============================================================================
+resource "null_resource" "node_firewall_rules" {
+  count      = length(clouddk_server.node)
+  depends_on = ["null_resource.node_tuning"]
+
+  connection {
+    type  = "ssh"
+    agent = false
+
+    host        = "${element(flatten(clouddk_server.node[count.index].network_interface_addresses), 0)}"
+    port        = 22
+    user        = "root"
+    private_key = tls_private_key.private_ssh_key.private_key_pem
+    timeout     = "5m"
+  }
+
+  provisioner "file" {
+    destination = "/etc/network/if-up.d/default-firewall-rules"
+    content     = <<EOF
+#!/bin/sh
+# Skip applying the firewall rules for interfaces other than eth0
+if [ "$IFACE" != "eth0" ]; then
+  exit 0
+fi
+
+# Apply the firewall rules for etcd.
+iptables -D INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP
+iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)} --dport 2379:2380 -j ACCEPT
+
+iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)} --dport 2379:2380 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP
+
+# Apply the firewall rules for kubernetes.
+iptables -D INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP
+iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)} --dport 10250:10255 -j ACCEPT
+
+iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)} --dport 10250:10255 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP
+EOF
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /etc/network/if-up.d/default-firewall-rules",
+      "iptables -D INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP",
+      "iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)} --dport 2379:2380 -j ACCEPT",
+
+      "iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)} --dport 2379:2380 -j ACCEPT",
+      "iptables -A INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP",
+
+      "iptables -D INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP",
+      "iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)} --dport 10250:10255 -j ACCEPT",
+
+      "iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)} --dport 10250:10255 -j ACCEPT",
+      "iptables -A INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP",
+    ]
+  }
+
+  triggers = {
+    control_plane_addresses = join(",,", local.kubernetes_control_plane_addresses)
+  }
+}

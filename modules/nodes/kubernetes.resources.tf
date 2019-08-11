@@ -32,6 +32,7 @@ resource "null_resource" "kubernetes_install" {
   }
 
   provisioner "file" {
+    destination = "/etc/docker/daemon.json"
     content     = <<EOF
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
@@ -43,7 +44,6 @@ resource "null_resource" "kubernetes_install" {
   "storage-driver": "overlay2"
 }
 EOF
-    destination = "/etc/docker/daemon.json"
   }
 
   provisioner "remote-exec" {
@@ -57,10 +57,16 @@ EOF
 #===============================================================================
 # STEP 2: Generate control plane port numbers and CA certificate
 #===============================================================================
-resource "random_shuffle" "api_port_numbers" {
+resource "random_shuffle" "api_ports" {
   count        = "${var.master ? 1 : 0}"
   input        = ["6443"]
   result_count = length(clouddk_server.load_balancer)
+}
+
+resource "random_shuffle" "control_plane_ports" {
+  count        = "${var.master ? 1 : 0}"
+  input        = ["6443"]
+  result_count = length(clouddk_server.node)
 }
 
 resource "tls_private_key" "ca_private_key" {
@@ -133,6 +139,7 @@ resource "null_resource" "kubernetes_init" {
   }
 
   provisioner "file" {
+    destination = "/tmp/config.new.yaml"
     content     = <<EOT
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
@@ -162,7 +169,7 @@ networking:
   podSubnet: 10.32.0.0/12
 apiServer:
   certSANs:
-  - ${join("\n  - ", local.kubernetes_api_addresses)}
+  - ${join("\n  - ", concat(local.kubernetes_api_addresses, local.kubernetes_control_plane_addresses))}
   extraArgs:
     max-requests-inflight: "1000"
     max-mutating-requests-inflight: "500"
@@ -173,7 +180,6 @@ controllerManager:
     cluster-cidr: "10.32.0.0/12"
     deployment-controller-sync-period: "50s"
 EOT
-    destination = "/tmp/config.new.yaml"
   }
 
   provisioner "remote-exec" {
@@ -219,7 +225,7 @@ resource "null_resource" "kubernetes_join" {
   provisioner "remote-exec" {
     inline = [
       "echo 'KUBELET_EXTRA_ARGS=--cloud-provider=external --container-log-max-files=2 --container-log-max-size=64Mi --node-ip=${element(flatten(clouddk_server.node[(var.master ? count.index + 1 : count.index)].network_interface_addresses), 0)} --node-labels=kubernetes.cloud.dk/node-pool=${var.node_pool_name}' >> /etc/default/kubelet",
-      "kubeadm join ${element(local.kubernetes_api_addresses, 0)}:6443 --token ${local.kubernetes_bootstrap_token} --discovery-token-unsafe-skip-ca-verification ${var.master ? "--control-plane" : ""} --certificate-key ${local.kubernetes_certificate_key}",
+      "kubeadm join ${element(local.kubernetes_api_addresses, 0)}:${element(local.kubernetes_api_ports, 0)} --token ${local.kubernetes_bootstrap_token} --discovery-token-unsafe-skip-ca-verification ${var.master ? "--control-plane" : ""} --certificate-key ${local.kubernetes_certificate_key}",
     ]
   }
 }
@@ -242,6 +248,7 @@ resource "null_resource" "kubernetes_cloud_controller" {
   }
 
   provisioner "file" {
+    destination = "/tmp/clouddk.config.yaml"
     content     = <<EOT
 apiVersion: v1
 kind: Secret
@@ -255,7 +262,6 @@ data:
   CLOUDDK_SSH_PRIVATE_KEY: ${base64encode(base64encode(tls_private_key.private_ssh_key.private_key_pem))}
   CLOUDDK_SSH_PUBLIC_KEY: ${base64encode(base64encode(tls_private_key.private_ssh_key.public_key_openssh))}
 EOT
-    destination = "/tmp/clouddk.config.yaml"
   }
 
   provisioner "remote-exec" {
@@ -268,7 +274,7 @@ EOT
   }
 
   provisioner "remote-exec" {
-    when   = "destroy"
+    when = "destroy"
     inline = [
       "export KUBECONFIG=/etc/kubernetes/admin.conf",
       "echo Deleting all service definitions to force load balancers to be destroyed",

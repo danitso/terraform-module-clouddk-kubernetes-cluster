@@ -1,3 +1,15 @@
+variable "api_addresses" {
+  description = "The API addresses"
+  default     = []
+  type        = "list"
+}
+
+variable "api_ports" {
+  description = "The API ports"
+  default     = [6443]
+  type        = "list"
+}
+
 variable "bootstrap_token" {
   description = "The bootstrap token"
   default     = ""
@@ -16,16 +28,16 @@ variable "cluster_name" {
   type        = "string"
 }
 
-variable "control_plane_address" {
-  description = "The control plane address"
-  default     = ""
-  type        = "string"
+variable "control_plane_addresses" {
+  description = "The control plane addresses"
+  default     = []
+  type        = "list"
 }
 
-variable "control_plane_port" {
-  description = "The control plane port"
-  default     = 6443
-  type        = "string"
+variable "control_plane_ports" {
+  description = "The control plane ports"
+  default     = [6443]
+  type        = "list"
 }
 
 variable "load_balancer_count" {
