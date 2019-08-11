@@ -15,8 +15,8 @@ The default cluster configuration has the following specifications, which is onl
 | Type                | Count | Memory  | Processors |
 |:--------------------|------:|--------:|-----------:|
 | Load Balancer (API) | 1     | 1024 MB | 1          |
-| Master              | 3     | 4096 MB | 2          |
-| Worker              | 2     | 4096 MB | 2          |
+| Master Node         | 3     | 4096 MB | 2          |
+| Worker Node         | 2     | 4096 MB | 2          |
 
 You can create a new cluster with this configuration by following these steps:
 
