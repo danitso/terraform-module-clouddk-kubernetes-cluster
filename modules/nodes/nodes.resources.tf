@@ -2,7 +2,7 @@
 # STEP 1: Create node servers
 #===============================================================================
 resource "clouddk_server" "node" {
-  count = max(var.node_count, (var.master ? 1 : 0))
+  count = max(var.node_count, (var.master ? 3 : 0))
 
   hostname      = "k8s-${local.node_type}-node-${var.cluster_name}-${count.index + 1}"
   label         = "k8s-${local.node_type}-node-${var.cluster_name}-${count.index + 1}"
