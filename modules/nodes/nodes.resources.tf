@@ -157,6 +157,6 @@ EOF
   }
 
   triggers = {
-    control_plane_addresses = join(",,", local.kubernetes_control_plane_addresses)
+    control_plane_addresses = join(",", local.kubernetes_control_plane_addresses)
   }
 }
