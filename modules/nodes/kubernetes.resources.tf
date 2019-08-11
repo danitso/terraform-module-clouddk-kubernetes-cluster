@@ -36,6 +36,7 @@ resource "null_resource" "kubernetes_install" {
     content     = <<EOF
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
+  "insecure-registries": ["10.32.0.0/12"],
   "log-driver": "json-file",
   "log-opts": {
     "max-file": "2",
