@@ -304,7 +304,7 @@ resource "null_resource" "kubernetes_network" {
   provisioner "remote-exec" {
     inline = [
       "export KUBECONFIG=/etc/kubernetes/admin.conf",
-      "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')",
+      "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')'&'env.IPALLOC_INIT=observer",
     ]
   }
 }
