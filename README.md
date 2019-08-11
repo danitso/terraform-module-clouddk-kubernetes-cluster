@@ -13,7 +13,7 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
 The default cluster configuration has the following specifications, which is only recommended for development purposes:
 
 | Type                | Count | Processors | Memory  |
-| --------------------|------:|-----------:|--------:|
+|:--------------------|------:|-----------:|--------:|
 | Load Balancer (API) | 1     | 1          | 1024 MB |
 | Master              | 3     | 2          | 4096 MB |
 | Worker              | 2     | 2          | 4096 MB |
