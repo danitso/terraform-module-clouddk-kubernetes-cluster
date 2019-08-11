@@ -63,7 +63,7 @@ _NOTE: The `danitso/terraform` image contains all the custom providers developed
 
 ### Cloud Controller Manager
 
-This module also provisions a Cloud Controller Manager for [Cloud.dk](https://cloud.dk) developed by [Danitso](https://danitso.com). The controller adds support for services of type `LoadBalancer` as well as other important features.
+This module also provisions a Cloud Controller Manager for [Cloud.dk](https://cloud.dk). The controller adds support for services of type `LoadBalancer` as well as other important features.
 
 You can read more about the controller on the [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager) project page.
 
