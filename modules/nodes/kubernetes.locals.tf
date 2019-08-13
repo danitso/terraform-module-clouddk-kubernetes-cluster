@@ -22,7 +22,18 @@ locals {
     slice(flatten(random_shuffle.control_plane_ports.*.result), 0, (var.master ? length(flatten(random_shuffle.control_plane_ports.*.result)) : 0)),
     slice(var.control_plane_ports, 0, (var.master ? 0 : length(var.control_plane_ports)))
   )
+  kubernetes_node_pool_label = "kubernetes.cloud.dk/node-pool=${var.master ? "master" : var.node_pool_name}"
+  kubernetes_packages = [
+    "containerd.io",
+    "docker-ce=5:18.09.8~3-0~ubuntu-xenial",
+    "docker-ce-cli=5:18.09.8~3-0~ubuntu-xenial",
+    "kubelet=${local.kubernetes_version}-00",
+    "kubeadm=${local.kubernetes_version}-00",
+    "kubectl=${local.kubernetes_version}-00",
+  ]
   kubernetes_service_account_token = trimspace(element(concat(data.sftp_remote_file.kubernetes_token.*.contents, list("")), 0))
+  kubernetes_subnet                = "10.32.0.0/12"
+  kubernetes_version               = "1.15.2"
 
   kubernetes_config_raw = <<EOF
 current-context: ${var.cluster_name}

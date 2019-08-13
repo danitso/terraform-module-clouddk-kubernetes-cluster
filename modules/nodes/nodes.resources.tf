@@ -125,16 +125,16 @@ fi
 
 # Apply the firewall rules for etcd.
 iptables -D INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP
-iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},10.32.0.0/12,127.0.0.1 --dport 2379:2380 -j ACCEPT
+iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 2379:2380 -j ACCEPT
 
-iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},10.32.0.0/12,127.0.0.1 --dport 2379:2380 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 2379:2380 -j ACCEPT
 iptables -A INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP
 
 # Apply the firewall rules for kubernetes.
 iptables -D INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP
-iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},10.32.0.0/12,127.0.0.1 --dport 10250:10255 -j ACCEPT
+iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 10250:10255 -j ACCEPT
 
-iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},10.32.0.0/12,127.0.0.1 --dport 10250:10255 -j ACCEPT
+iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 10250:10255 -j ACCEPT
 iptables -A INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP
 EOF
   }
@@ -143,15 +143,15 @@ EOF
     inline = [
       "chmod +x /etc/network/if-up.d/default-firewall-rules",
       "iptables -D INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP",
-      "iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},10.32.0.0/12,127.0.0.1 --dport 2379:2380 -j ACCEPT",
+      "iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 2379:2380 -j ACCEPT",
 
-      "iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},10.32.0.0/12,127.0.0.1 --dport 2379:2380 -j ACCEPT",
+      "iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 2379:2380 -j ACCEPT",
       "iptables -A INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP",
 
       "iptables -D INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP",
-      "iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},10.32.0.0/12,127.0.0.1 --dport 10250:10255 -j ACCEPT",
+      "iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 10250:10255 -j ACCEPT",
 
-      "iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},10.32.0.0/12,127.0.0.1 --dport 10250:10255 -j ACCEPT",
+      "iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},1${local.kubernetes_subnet},127.0.0.1 --dport 10250:10255 -j ACCEPT",
       "iptables -A INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP",
     ]
   }

@@ -27,7 +27,7 @@ resource "null_resource" "kubernetes_install" {
       "apt-key fingerprint 0EBFCD88",
       "add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable'",
       "apt-get -q update",
-      "apt-get -q install -y docker-ce=5:18.09.8~3-0~ubuntu-xenial docker-ce-cli=5:18.09.8~3-0~ubuntu-xenial containerd.io kubelet kubeadm kubectl",
+      "apt-get -q install -y ${join(" ", local.kubernetes_packages)}",
     ]
   }
 
@@ -36,7 +36,7 @@ resource "null_resource" "kubernetes_install" {
     content     = <<EOF
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
-  "insecure-registries": ["10.32.0.0/12"],
+  "insecure-registries": ["${local.kubernetes_subnet}"],
   "log-driver": "json-file",
   "log-opts": {
     "max-file": "2",
@@ -157,17 +157,17 @@ nodeRegistration:
     container-log-max-files: "2"
     container-log-max-size: "64Mi"
     node-ip: "${element(flatten(clouddk_server.node[0].network_interface_addresses), 0)}"
-    node-labels: "kubernetes.cloud.dk/node-pool=${var.node_pool_name}"
+    node-labels: "${local.kubernetes_node_pool_label}"
 certificateKey: "${local.kubernetes_certificate_key}"
 ---
 apiVersion: kubeadm.k8s.io/v1beta1
 kind: ClusterConfiguration
-kubernetesVersion: stable
+kubernetesVersion: v${local.kubernetes_version}
 clusterName: ${var.cluster_name}
 controlPlaneEndpoint: ${element(local.kubernetes_api_addresses, 0)}:${element(local.kubernetes_api_ports, 0)}
 certificatesDir: /etc/kubernetes/pki
 networking:
-  podSubnet: 10.32.0.0/12
+  podSubnet: ${local.kubernetes_subnet}
 apiServer:
   certSANs:
   - ${join("\n  - ", concat(local.kubernetes_api_addresses, local.kubernetes_control_plane_addresses))}
@@ -178,7 +178,8 @@ apiServer:
     watch-cache-sizes: "persistentvolumeclaims#1000,persistentvolumes#1000"
 controllerManager:
   extraArgs:
-    cluster-cidr: "10.32.0.0/12"
+    cluster-cidr: "${local.kubernetes_subnet}"
+    cluster-name: "${var.cluster_name}"
     deployment-controller-sync-period: "50s"
 EOT
   }
@@ -225,7 +226,7 @@ resource "null_resource" "kubernetes_join" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo 'KUBELET_EXTRA_ARGS=--cloud-provider=external --container-log-max-files=2 --container-log-max-size=64Mi --node-ip=${element(flatten(clouddk_server.node[(var.master ? count.index + 1 : count.index)].network_interface_addresses), 0)} --node-labels=kubernetes.cloud.dk/node-pool=${var.node_pool_name}' >> /etc/default/kubelet",
+      "echo 'KUBELET_EXTRA_ARGS=--cloud-provider=external --container-log-max-files=2 --container-log-max-size=64Mi --node-ip=${element(flatten(clouddk_server.node[(var.master ? count.index + 1 : count.index)].network_interface_addresses), 0)} --node-labels=${local.kubernetes_node_pool_label}' >> /etc/default/kubelet",
       "kubeadm join ${element(local.kubernetes_api_addresses, 0)}:${element(local.kubernetes_api_ports, 0)} --token ${local.kubernetes_bootstrap_token} --discovery-token-unsafe-skip-ca-verification ${var.master ? "--control-plane" : ""} --certificate-key ${local.kubernetes_certificate_key}",
     ]
   }
