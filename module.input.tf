@@ -1,6 +1,6 @@
 variable "cluster_name" {
   description = "The name of the cluster"
-  default     = "danitso-kubernetes-cluster"
+  default     = "clouddk-kubernetes-cluster"
   type        = "string"
 }
 

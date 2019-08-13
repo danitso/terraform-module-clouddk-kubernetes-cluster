@@ -70,7 +70,7 @@ This module also provisions a [Cloud Controller Manager for Cloud.dk](https://gi
 ### cluster_name
 The name of the cluster.
 
-**Default**: danitso-kubernetes-cluster
+**Default**: clouddk-kubernetes-cluster
 
 ### load_balancer_count
 The number of load balancers.
