@@ -1,3 +1,6 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 #===============================================================================
 # STEP 1: Install software
 #===============================================================================
@@ -228,6 +231,13 @@ resource "null_resource" "kubernetes_join" {
     inline = [
       "echo 'KUBELET_EXTRA_ARGS=--cloud-provider=external --container-log-max-files=2 --container-log-max-size=64Mi --node-ip=${element(flatten(clouddk_server.node[(var.master ? count.index + 1 : count.index)].network_interface_addresses), 0)} --node-labels=${local.kubernetes_node_pool_label}' >> /etc/default/kubelet",
       "kubeadm join ${element(local.kubernetes_api_addresses, 0)}:${element(local.kubernetes_api_ports, 0)} --token ${local.kubernetes_bootstrap_token} --discovery-token-unsafe-skip-ca-verification ${var.master ? "--control-plane" : ""} --certificate-key ${local.kubernetes_certificate_key}",
+    ]
+  }
+
+  provisioner "remote-exec" {
+    when   = "destroy"
+    inline = [
+      "kubeadm reset -f",
     ]
   }
 }

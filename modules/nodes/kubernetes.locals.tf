@@ -1,3 +1,7 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+
 locals {
   kubernetes_api_addresses = concat(
     slice(flatten(clouddk_server.load_balancer.*.network_interface_addresses), 0, (var.master ? length(flatten(clouddk_server.load_balancer.*.network_interface_addresses)) : 0)),
