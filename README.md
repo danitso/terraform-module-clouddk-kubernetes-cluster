@@ -55,7 +55,7 @@ You can create a new cluster with this configuration by following these steps:
     docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
     ```
 
-You can modify the configuration by changing the [Input Variables](#input-variables) on the `module` block.
+You can modify the configuration by changing the [Input Variables](#input-variables) inside the `module` block.
 
 _NOTE: The `danitso/terraform` image contains all the custom providers developed by [Danitso](https://danitso.com). In case you do not want to use this image, you must manually download and install the required provider plug-ins listed under the [Requirements](#requirements) section._
 
@@ -63,7 +63,7 @@ _NOTE: The `danitso/terraform` image contains all the custom providers developed
 
 ### Cloud Controller Manager
 
-This module also provisions a [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager). The controller adds support for services of type `LoadBalancer` as well as other important features.
+This module also provisions the [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager). The controller adds support for services of type `LoadBalancer` as well as other important features.
 
 ## Input Variables
 
