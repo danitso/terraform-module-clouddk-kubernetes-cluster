@@ -48,7 +48,7 @@ You can create a new cluster with this configuration by following these steps:
     docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 init
     ```
 
-1. Provision the cluster and provide an API key from https://my.cloud.dk/account/api-key when prompted
+1. Provision the cluster and provide an API key from [my.cloud.dk](https://my.cloud.dk/account/api-key) when prompted
 
     ```bash
     docker run -v .:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
