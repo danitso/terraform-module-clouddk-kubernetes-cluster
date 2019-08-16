@@ -5,7 +5,7 @@
 variable "cluster_name" {
   description = "The name of the cluster"
   default     = "clouddk-kubernetes-cluster"
-  type        = "string"
+  type        = string
 }
 
 variable "load_balancer_count" {
@@ -47,24 +47,24 @@ variable "master_node_processors" {
 variable "provider_location" {
   description = "The cluster's geographical location"
   default     = "dk1"
-  type        = "string"
+  type        = string
 }
 
 variable "provider_password" {
   description = "This variable is currently unused"
   default     = ""
-  type        = "string"
+  type        = string
 }
 
 variable "provider_token" {
   description = "The API key"
-  type        = "string"
+  type        = string
 }
 
 variable "provider_username" {
   description = "This variable is currently unused"
   default     = ""
-  type        = "string"
+  type        = string
 }
 
 variable "worker_node_count" {
@@ -82,7 +82,7 @@ variable "worker_node_memory" {
 variable "worker_node_pool_name" {
   description = "The name of the worker node pool"
   default     = "default"
-  type        = "string"
+  type        = string
 }
 
 variable "worker_node_processors" {

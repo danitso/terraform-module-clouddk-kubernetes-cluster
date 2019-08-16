@@ -5,43 +5,43 @@
 variable "api_addresses" {
   description = "The API addresses"
   default     = []
-  type        = "list"
+  type        = list(string)
 }
 
 variable "api_ports" {
   description = "The API ports"
   default     = [6443]
-  type        = "list"
+  type        = list(number)
 }
 
 variable "bootstrap_token" {
   description = "The bootstrap token"
   default     = ""
-  type        = "string"
+  type        = string
 }
 
 variable "certificate_key" {
   description = "The certificate key for the Kubernetes secret"
   default     = ""
-  type        = "string"
+  type        = string
 }
 
 variable "cluster_name" {
   description = "The name of the cluster"
   default     = "danitso-kubernetes-cluster"
-  type        = "string"
+  type        = string
 }
 
 variable "control_plane_addresses" {
   description = "The control plane addresses"
   default     = []
-  type        = "list"
+  type        = list(string)
 }
 
 variable "control_plane_ports" {
   description = "The control plane ports"
   default     = [6443]
-  type        = "list"
+  type        = list(number)
 }
 
 variable "load_balancer_count" {
@@ -83,7 +83,7 @@ variable "node_memory" {
 variable "node_pool_name" {
   description = "The node pool name"
   default     = "default"
-  type        = "string"
+  type        = string
 }
 
 variable "node_processors" {
@@ -95,8 +95,10 @@ variable "node_processors" {
 variable "provider_location" {
   description = "The geographical location"
   default     = "dk1"
+  type        = string
 }
 
 variable "provider_token" {
   description = "The API key"
+  type        = string
 }
