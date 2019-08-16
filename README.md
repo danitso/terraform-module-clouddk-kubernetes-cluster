@@ -67,42 +67,56 @@ _NOTE: The `danitso/terraform` image contains all the custom providers developed
 
 ## Additional node pools
 
-In case you need additional node pools with different hardware specifications or simply need to isolate certain services, you can go ahead and create one by adding a new `module` block to the `kubernetes_cluster.tf` file created in [Getting started](#getting-started):
+In case you need additional node pools with different hardware specifications or simply need to isolate certain services, you can go ahead and create a new one by following these steps:
 
-```hcl
-module "kubernetes_node_pool_custom" {
-  source = "github.com/danitso/terraform-module-clouddk-kubernetes-cluster/modules/nodes"
+1. Add a new `module` block to the `kubernetes_cluster.tf` file created in [Getting started](#getting-started):
 
-  api_addresses           = module.kubernetes_cluster.api_addresses
-  api_ports               = module.kubernetes_cluster.api_ports
-  bootstrap_token         = module.kubernetes_cluster.bootstrap_token
-  certificate_key         = module.kubernetes_cluster.certificate_key
-  cluster_name            = module.kubernetes_cluster.cluster_name
-  control_plane_addresses = module.kubernetes_cluster.control_plane_addresses
-  control_plane_ports     = module.kubernetes_cluster.control_plane_ports
-  master                  = false
-  node_count              = 2
-  node_memory             = 4096
-  node_pool_name          = "custom"
-  node_processors         = 2
-  provider_location       = module.kubernetes_cluster.provider_location
-  provider_token          = module.kubernetes_cluster.provider_token
-}
-```
+    ```hcl
+    module "kubernetes_node_pool_custom" {
+    source = "github.com/danitso/terraform-module-clouddk-kubernetes-cluster/modules/nodes"
 
-This will create a node pool with the name `custom`, which can be targeted by using the label selector `kubernetes.cloud.dk/node-pool=custom`. You should also adjust existing resources to target the `default` node pool.
+    api_addresses           = module.kubernetes_cluster.api_addresses
+    api_ports               = module.kubernetes_cluster.api_ports
+    bootstrap_token         = module.kubernetes_cluster.bootstrap_token
+    certificate_key         = module.kubernetes_cluster.certificate_key
+    cluster_name            = module.kubernetes_cluster.cluster_name
+    control_plane_addresses = module.kubernetes_cluster.control_plane_addresses
+    control_plane_ports     = module.kubernetes_cluster.control_plane_ports
+    master                  = false
+    node_count              = 2
+    node_memory             = 4096
+    node_pool_name          = "custom"
+    node_processors         = 2
+    provider_location       = module.kubernetes_cluster.provider_location
+    provider_token          = module.kubernetes_cluster.provider_token
+    }
+    ```
 
-Remember to provision the new node pool by invoking Terraform:
+1. Re-initialize your workspace
 
-```bash
-docker run -v .:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
-```
+    ```bash
+    docker run -v .:/workspace -it --rm danitso/terraform:0.12 init
+    ```
 
-or using `cmd.exe`:
+    or using `cmd.exe`:
 
-```batchfile
-docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
-```
+    ```batchfile
+    docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 init
+    ```
+
+1. Apply the changes
+
+    ```bash
+    docker run -v .:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
+    ```
+
+    or using `cmd.exe`:
+
+    ```batchfile
+    docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
+    ```
+
+This will create a new node pool with the name `custom`, which can be targeted by using the label selector `kubernetes.cloud.dk/node-pool=custom`.
 
 ## Input Variables
 
