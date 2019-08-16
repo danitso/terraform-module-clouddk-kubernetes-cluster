@@ -63,7 +63,7 @@ You can create a new cluster with this configuration by following these steps:
 
 You can modify the configuration by changing the [Input Variables](#input-variables) inside the `module` block.
 
-_NOTE: The `danitso/terraform` image contains all the custom providers developed by [Danitso](https://danitso.com). In case you do not want to use this image, you must manually download and install the required provider plug-ins listed under the [Requirements](#requirements) section._
+_NOTE: The `danitso/terraform` image contains all the custom providers developed by [Danitso](https://danitso.com). In case you do not want to use this image, you must manually download and install the required provider plug-ins for Terraform listed under the [Requirements](#requirements) section._
 
 ## Additional node pools
 
