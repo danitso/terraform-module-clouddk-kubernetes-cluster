@@ -5,6 +5,6 @@
 module "node_server_selector" {
   source = "github.com/danitso/terraform-module-clouddk-server-selector"
 
-  server_memory     = var.node_memory
-  server_processors = var.node_processors
+  server_memory     = max(var.node_memory, 2048)
+  server_processors = max(var.node_processors, 1)
 }

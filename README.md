@@ -75,30 +75,42 @@ The name of the cluster.
 ### load_balancer_count
 The number of load balancers.
 
+**Minimum**: 1
+
 **Default**: 1
 
 ### load_balancer_memory
 The minimum amount of memory (in megabytes) for each load balancer.
+
+**Minimum**: 512
 
 **Default**: 1024
 
 ### load_balancer_processors
 The minimum number of processors (cores) for each load balancer.
 
+**Minimum**: 1
+
 **Default**: 1
 
 ### master_node_count
 The number of master nodes.
+
+**Minimum**: 3
 
 **Default**: 3
 
 ### master_node_memory
 The minimum amount of memory (in megabytes) for each master node.
 
+**Minimum**: 2048
+
 **Default**: 4096
 
 ### master_node_processors
 The minimum number of processors (cores) for each master node.
+
+**Minimum**: 1
 
 **Default**: 2
 
@@ -119,10 +131,14 @@ _This variable is currently unused._
 ### worker_node_count
 The number of worker nodes in the default worker node pool.
 
+**Minimum**: 1
+
 **Default**: 2
 
 ### worker_node_memory
 The minimum amount of memory (in megabytes) for each node in the default worker node pool.
+
+**Minimum**: 2048
 
 **Default**: 4096
 
@@ -133,6 +149,8 @@ The name of the worker node pool.
 
 ### worker_node_processors
 The minimum number of processors for each node in the default worker node pool.
+
+**Minimum**: 1
 
 **Default**: 2
 
