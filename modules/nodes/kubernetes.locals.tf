@@ -31,9 +31,9 @@ locals {
     "containerd.io",
     "docker-ce=5:18.09.8~3-0~ubuntu-xenial",
     "docker-ce-cli=5:18.09.8~3-0~ubuntu-xenial",
-    "kubelet=${local.kubernetes_version}-00",
     "kubeadm=${local.kubernetes_version}-00",
     "kubectl=${local.kubernetes_version}-00",
+    "kubelet=${local.kubernetes_version}-00",
   ]
   kubernetes_service_account_token = trimspace(element(concat(data.sftp_remote_file.kubernetes_token.*.contents, list("")), 0))
   kubernetes_subnet                = "10.32.0.0/12"

@@ -163,3 +163,70 @@ EOF
     control_plane_addresses = join(",", local.kubernetes_control_plane_addresses)
   }
 }
+#===============================================================================
+# STEP 4: Configure unattended upgrades
+#===============================================================================
+resource "null_resource" "node_unattended_upgrades" {
+  count      = length(clouddk_server.node)
+  depends_on = ["null_resource.node_tuning"]
+
+  connection {
+    type  = "ssh"
+    agent = false
+
+    host        = "${element(flatten(clouddk_server.node[count.index].network_interface_addresses), 0)}"
+    port        = 22
+    user        = "root"
+    private_key = tls_private_key.private_ssh_key.private_key_pem
+    timeout     = "5m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "apt-get -q install -y unattended-upgrades",
+    ]
+  }
+
+  provisioner "file" {
+    destination = "/etc/apt/apt.conf.d/20auto-upgrades"
+    content     = <<EOF
+APT::Periodic::AutocleanInterval "7";
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::Enable "1";
+APT::Periodic::Unattended-Upgrade "1";
+APT::Periodic::Update-Package-Lists "1";
+EOF
+  }
+
+  provisioner "file" {
+    destination = "/etc/apt/apt.conf.d/50unattended-upgrades"
+    content     = <<EOF
+Unattended-Upgrade::Allowed-Origins {
+    "$${distro_id}:$${distro_codename}";
+    "$${distro_id}:$${distro_codename}-security";
+    "$${distro_id}ESM:$${distro_codename}";
+    "$${distro_id}:$${distro_codename}-updates";
+};
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-Time "00:${format("%02d", count.index * 15 % 60)}";
+Unattended-Upgrade::AutoFixInterruptedDpkg "true";
+Unattended-Upgrade::DevRelease "false";
+Unattended-Upgrade::InstallOnShutdown "false";
+Unattended-Upgrade::MinimalSteps "true";
+Unattended-Upgrade::OnlyOnACPower "false";
+Unattended-Upgrade::Package-Blacklist {
+    "containerd.io"
+    "docker-ce";
+    "docker-ce-cli";
+    "kubeadm";
+    "kubectl";
+    "kubelet";
+};
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+Unattended-Upgrade::Skip-Updates-On-Metered-Connections "false";
+Unattended-Upgrade::SyslogEnable "true";
+Unattended-Upgrade::SyslogFacility "daemon";
+EOF
+  }
+}
