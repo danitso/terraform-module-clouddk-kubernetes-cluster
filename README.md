@@ -30,10 +30,10 @@ You can create a new cluster with this configuration by following these steps:
 
     ```hcl
     module "kubernetes_cluster" {
-        source = "github.com/danitso/terraform-module-clouddk-kubernetes-cluster"
+      source = "github.com/danitso/terraform-module-clouddk-kubernetes-cluster"
 
-        cluster_name   = "the-name-of-your-cluster-without-spaces-and-special-characters"
-        provider_token = "the API key from https://my.cloud.dk/account/api-key"
+      cluster_name   = "the-name-of-your-cluster-without-spaces-and-special-characters"
+      provider_token = "the API key from https://my.cloud.dk/account/api-key"
     }
     ```
 
@@ -73,22 +73,22 @@ In case you need additional node pools with different hardware specifications or
 
     ```hcl
     module "kubernetes_node_pool_custom" {
-    source = "github.com/danitso/terraform-module-clouddk-kubernetes-cluster/modules/nodes"
+      source = "github.com/danitso/terraform-module-clouddk-kubernetes-cluster/modules/nodes"
 
-    api_addresses           = module.kubernetes_cluster.api_addresses
-    api_ports               = module.kubernetes_cluster.api_ports
-    bootstrap_token         = module.kubernetes_cluster.bootstrap_token
-    certificate_key         = module.kubernetes_cluster.certificate_key
-    cluster_name            = module.kubernetes_cluster.cluster_name
-    control_plane_addresses = module.kubernetes_cluster.control_plane_addresses
-    control_plane_ports     = module.kubernetes_cluster.control_plane_ports
-    master                  = false
-    node_count              = 2
-    node_memory             = 4096
-    node_pool_name          = "custom"
-    node_processors         = 2
-    provider_location       = module.kubernetes_cluster.provider_location
-    provider_token          = module.kubernetes_cluster.provider_token
+      api_addresses           = module.kubernetes_cluster.api_addresses
+      api_ports               = module.kubernetes_cluster.api_ports
+      bootstrap_token         = module.kubernetes_cluster.bootstrap_token
+      certificate_key         = module.kubernetes_cluster.certificate_key
+      cluster_name            = module.kubernetes_cluster.cluster_name
+      control_plane_addresses = module.kubernetes_cluster.control_plane_addresses
+      control_plane_ports     = module.kubernetes_cluster.control_plane_ports
+      master                  = false
+      node_count              = 2
+      node_memory             = 4096
+      node_pool_name          = "custom"
+      node_processors         = 2
+      provider_location       = module.kubernetes_cluster.provider_location
+      provider_token          = module.kubernetes_cluster.provider_token
     }
     ```
 
