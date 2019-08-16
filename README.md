@@ -10,13 +10,13 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
 
 ## Addons
 
-### Cloud Controller Manager
+### [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager)
 
-This module provisions the [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager). The controller adds support for services of type `LoadBalancer` as well as other important features.
+The controller adds support for services of type `LoadBalancer` as well as other important features.
 
-### Container Network Interface
+### [Weave CNI Plugin](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/)
 
-This module provisions the [Weave CNI Plugin](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/). The plugin adds a virtual network inside the cluster to allow containers to communicate across nodes.
+The plugin adds a virtual network inside the cluster to allow containers to communicate across nodes.
 
 ## Getting started
 
