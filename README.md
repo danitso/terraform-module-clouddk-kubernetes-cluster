@@ -143,7 +143,7 @@ The minimum amount of memory (in megabytes) for each node in the default worker 
 **Default**: 4096
 
 ### worker_node_pool_name
-The name of the worker node pool.
+The name of the default worker node pool.
 
 **Default**: default
 
