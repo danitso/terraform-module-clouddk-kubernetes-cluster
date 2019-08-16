@@ -80,7 +80,7 @@ set KUBECONFIG=%CD%/conf/the_name_of_your_cluster.conf
 kubectl get nodes
 ```
 
-The `kubectl` command should result in output similar to this:
+The `kubectl` command should output something similar to this:
 
 ```
 NAME                                                   STATUS    ROLES     AGE       VERSION
