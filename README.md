@@ -107,7 +107,7 @@ The nodes may still be initializing in which case you will see the status _NotRe
 
 ## Additional node pools
 
-In case you need additional node pools with different hardware specifications or simply need to isolate certain services, you can go ahead and create a new one by following these steps:
+In case you need additional node pools with different hardware specifications or simply need to isolate certain services, you can go ahead and create a new one:
 
 1. Append the following contents to the `kubernetes_cluster.tf` file:
 
