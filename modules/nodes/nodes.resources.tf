@@ -29,6 +29,7 @@ resource "clouddk_server" "node" {
   provisioner "remote-exec" {
     inline = [
       "export DEBIAN_FRONTEND=noninteractive",
+      "while ps aux | grep -q [a]pt; do sleep 1; done",
       "while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done",
       "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
       "sed -i 's/us.archive.ubuntu.com/mirrors.dotsrc.org/' /etc/apt/sources.list",
@@ -184,6 +185,8 @@ resource "null_resource" "node_unattended_upgrades" {
 
   provisioner "remote-exec" {
     inline = [
+      "export DEBIAN_FRONTEND=noninteractive",
+      "while ps aux | grep -q [a]pt; do sleep 1; done",
       "while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done",
       "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
       "apt-get -q install -y unattended-upgrades",
