@@ -120,7 +120,7 @@ The following addons are automatically provisioned by the module:
 
 The controller adds support for services of type `LoadBalancer` as well as other important features.
 
-### [Weave CNI Plugin](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/)
+### [Weave Net](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/)
 
 The plugin adds a virtual network inside the cluster to allow containers to communicate across nodes.
 
