@@ -4,9 +4,14 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
 
 > **WARNING:** This project is under active development and should be considered alpha.
 
+## Requirements
+
+- [Terraform](https://www.terraform.io/downloads.html) 0.12+
+- [Terraform Provider for Cloud.dk](https://github.com/danitso/terraform-provider-clouddk) 0.3+
+- [Terraform Provider for SFTP](https://github.com/danitso/terraform-provider-sftp) 0.1+
+
 ## Table of contents
 
-- [Requirements](#requirements)
 - [Getting started](#getting-started)
 - [Accessing the cluster](#accessing-the-cluster)
 - [Additional node pools](#additional-node-pools)
@@ -14,12 +19,6 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
 - [Variables](#variables)
     - [Input](#input)
     - [Output](#output)
-
-## Requirements
-
-- [Terraform](https://www.terraform.io/downloads.html) 0.12+
-- [Terraform Provider for Cloud.dk](https://github.com/danitso/terraform-provider-clouddk) 0.3+
-- [Terraform Provider for SFTP](https://github.com/danitso/terraform-provider-sftp) 0.1+
 
 ## Getting started
 
