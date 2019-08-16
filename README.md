@@ -84,11 +84,11 @@ The `kubectl` command should result in output similar to this:
 
 ```
 NAME                                                   STATUS    ROLES     AGE       VERSION
-k8s-master-node-clouddk-kubernetes-cluster-1           Ready     master    2d        v1.15.2
-k8s-master-node-clouddk-kubernetes-cluster-2           Ready     master    2d        v1.15.2
-k8s-master-node-clouddk-kubernetes-cluster-3           Ready     master    2d        v1.15.2
-k8s-worker-node-clouddk-kubernetes-cluster-default-1   Ready     <none>    2d        v1.15.2
-k8s-worker-node-clouddk-kubernetes-cluster-default-2   Ready     <none>    2d        v1.15.2
+k8s-master-node-clouddk-kubernetes-cluster-1           Ready     master    1d        v1.15.2
+k8s-master-node-clouddk-kubernetes-cluster-2           Ready     master    1d        v1.15.2
+k8s-master-node-clouddk-kubernetes-cluster-3           Ready     master    1d        v1.15.2
+k8s-worker-node-clouddk-kubernetes-cluster-default-1   Ready     <none>    1d        v1.15.2
+k8s-worker-node-clouddk-kubernetes-cluster-default-2   Ready     <none>    1d        v1.15.2
 ```
 
 The nodes may still be initializing in which case you will see the status _NotReady_. This should change to _Ready_ within a couple of minutes.
