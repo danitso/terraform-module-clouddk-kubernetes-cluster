@@ -64,6 +64,35 @@ You can modify the configuration by changing the [Input Variables](#input-variab
 
 _NOTE: The `danitso/terraform` image contains all the custom providers developed by [Danitso](https://danitso.com). In case you do not want to use this image, you must manually download and install the required provider plugins for Terraform listed under the [Requirements](#requirements) section._
 
+## Accessing the cluster
+
+If you have followed the [Getting started](#getting-started) guide without experiencing any problems, you should now be able to access the cluster with [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/):
+
+```bash
+export KUBECONFIG="$(pwd -P)/conf/the_name_of_your_cluster.conf"
+kubectl get nodes
+```
+
+or using `cmd.exe`:
+
+```batchfile
+set KUBECONFIG=%CD%/conf/the_name_of_your_cluster.conf
+kubectl get nodes
+```
+
+The `kubectl` command should result in output similar to this:
+
+```
+NAME                                                   STATUS    ROLES     AGE       VERSION
+k8s-master-node-clouddk-kubernetes-cluster-1           Ready     master    2d        v1.15.2
+k8s-master-node-clouddk-kubernetes-cluster-2           Ready     master    2d        v1.15.2
+k8s-master-node-clouddk-kubernetes-cluster-3           Ready     master    2d        v1.15.2
+k8s-worker-node-clouddk-kubernetes-cluster-default-1   Ready     <none>    2d        v1.15.2
+k8s-worker-node-clouddk-kubernetes-cluster-default-2   Ready     <none>    2d        v1.15.2
+```
+
+The nodes may still be initializing in which case you will see the status _NotReady_. This should change to _Ready_ within a couple of minutes.
+
 ## Additional node pools
 
 In case you need additional node pools with different hardware specifications or simply need to isolate certain services, you can go ahead and create a new one by following these steps:
