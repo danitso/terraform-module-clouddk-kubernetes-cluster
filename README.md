@@ -32,7 +32,7 @@ You can create a new cluster with this configuration by following these steps:
 
     variable "provider_token" {
       description = "The API key"
-      type        = "string"
+      type        = string
     }
     ```
 
