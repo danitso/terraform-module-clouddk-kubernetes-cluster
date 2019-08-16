@@ -152,11 +152,11 @@ The following addons are automatically provisioned by the module:
 
 ### [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager)
 
-The controller adds support for services of type `LoadBalancer` as well as other important features.
+Adds support for services of type `LoadBalancer` as well as other important features.
 
 ### [Weave Net](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/)
 
-The plugin adds a virtual network inside the cluster to allow containers to communicate across nodes.
+Adds a virtual network inside the cluster to allow containers to communicate across nodes.
 
 ## Input Variables
 
