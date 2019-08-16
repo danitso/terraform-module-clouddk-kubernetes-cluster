@@ -8,11 +8,15 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
 - [Terraform Provider for Cloud.dk](https://github.com/danitso/terraform-provider-clouddk) 0.3+
 - [Terraform Provider for SFTP](https://github.com/danitso/terraform-provider-sftp) 0.1+
 
-## Features
+## Addons
 
 ### Cloud Controller Manager
 
 This module provisions the [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager). The controller adds support for services of type `LoadBalancer` as well as other important features.
+
+### Container Network Interface
+
+This module provisions the [Weave CNI Plugin](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/). The plugin adds a virtual network to the cluster to allow containers to communicate across nodes.
 
 ## Getting started
 
@@ -63,7 +67,7 @@ You can create a new cluster with this configuration by following these steps:
 
 You can modify the configuration by changing the [Input Variables](#input-variables) inside the `module` block.
 
-_NOTE: The `danitso/terraform` image contains all the custom providers developed by [Danitso](https://danitso.com). In case you do not want to use this image, you must manually download and install the required provider plug-ins for Terraform listed under the [Requirements](#requirements) section._
+_NOTE: The `danitso/terraform` image contains all the custom providers developed by [Danitso](https://danitso.com). In case you do not want to use this image, you must manually download and install the required provider plugins for Terraform listed under the [Requirements](#requirements) section._
 
 ## Additional node pools
 
