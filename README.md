@@ -8,6 +8,12 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
 - [Terraform Provider for Cloud.dk](https://github.com/danitso/terraform-provider-clouddk) 0.3+
 - [Terraform Provider for SFTP](https://github.com/danitso/terraform-provider-sftp) 0.1+
 
+## Features
+
+### Cloud Controller Manager
+
+This module provisions the [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager). The controller adds support for services of type `LoadBalancer` as well as other important features.
+
 ## Getting started
 
 The default cluster configuration has the following specifications, which is only recommended for development purposes:
@@ -58,12 +64,6 @@ You can create a new cluster with this configuration by following these steps:
 You can modify the configuration by changing the [Input Variables](#input-variables) inside the `module` block.
 
 _NOTE: The `danitso/terraform` image contains all the custom providers developed by [Danitso](https://danitso.com). In case you do not want to use this image, you must manually download and install the required provider plug-ins listed under the [Requirements](#requirements) section._
-
-## Features
-
-### Cloud Controller Manager
-
-This module also provisions the [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager). The controller adds support for services of type `LoadBalancer` as well as other important features.
 
 ## Input Variables
 
