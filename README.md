@@ -92,6 +92,18 @@ module "kubernetes_node_pool_custom" {
 
 This will create a node pool with the name `custom`, which can be targeted by using the label selector `kubernetes.cloud.dk/node-pool=custom`. You should also adjust existing resources to target the `default` node pool.
 
+Remember to provision the new node pool by invoking Terraform:
+
+```bash
+docker run -v .:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
+```
+
+or using `cmd.exe`:
+
+```batchfile
+docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
+```
+
 ## Input Variables
 
 ### cluster_name
