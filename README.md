@@ -97,7 +97,7 @@ The nodes may still be initializing in which case you will see the status _NotRe
 
 In case you need additional node pools with different hardware specifications or simply need to isolate certain services, you can go ahead and create a new one by following these steps:
 
-1. Add a new `module` block to the `kubernetes_cluster.tf` file created in [Getting started](#getting-started):
+1. Append the following contents to the `kubernetes_cluster.tf` file created in [Getting started](#getting-started):
 
     ```hcl
     module "kubernetes_node_pool_custom" {
@@ -111,12 +111,18 @@ In case you need additional node pools with different hardware specifications or
       control_plane_addresses = module.kubernetes_cluster.control_plane_addresses
       control_plane_ports     = module.kubernetes_cluster.control_plane_ports
       master                  = false
-      node_count              = 2
+      node_count              = var.custom_node_count
       node_memory             = 4096
       node_pool_name          = "custom"
       node_processors         = 2
       provider_location       = module.kubernetes_cluster.provider_location
       provider_token          = module.kubernetes_cluster.provider_token
+    }
+
+    variable "custom_node_count" {
+      description = "The node count for the 'custom' node pool"
+      default     = 2
+      type        = "string"
     }
     ```
 
