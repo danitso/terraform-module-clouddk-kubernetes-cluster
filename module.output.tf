@@ -50,6 +50,11 @@ output "certificate_key" {
   sensitive   = true
 }
 
+output "cluster_name" {
+  description = "The cluster name"
+  value       = var.cluster_name
+}
+
 output "config_file" {
   description = "The absolute path to the Kubernetes configuration file for use with kubectl"
   value       = module.master_nodes.config_file

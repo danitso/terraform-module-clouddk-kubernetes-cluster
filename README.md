@@ -242,6 +242,9 @@ The bootstrap token for the worker nodes.
 ### certificate_key
 The key for the certificate secret.
 
+### cluster_name
+The name of the cluster.
+
 ### config_file
 The relative path to the configuration file for use with `kubectl`.
 
