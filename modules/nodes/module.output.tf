@@ -41,11 +41,13 @@ output "api_ports" {
 output "bootstrap_token" {
   description = "The bootstrap token"
   value       = local.kubernetes_bootstrap_token
+  sensitive   = true
 }
 
 output "certificate_key" {
   description = "The key for the certificate secret"
   value       = local.kubernetes_certificate_key
+  sensitive   = true
 }
 
 output "config_file" {

@@ -65,6 +65,33 @@ You can modify the configuration by changing the [Input Variables](#input-variab
 
 _NOTE: The `danitso/terraform` image contains all the custom providers developed by [Danitso](https://danitso.com). In case you do not want to use this image, you must manually download and install the required provider plug-ins listed under the [Requirements](#requirements) section._
 
+## Additional node pools
+
+In case you need additional node pools with different hardware specifications or simply need to isolate certain services, you can go ahead and create one by adding a new `module` block to the `kubernetes_cluster.tf` file created in [Getting started](#getting-started):
+
+```hcl
+module "kubernetes_node_pool_custom" {
+  source = "github.com/danitso/terraform-module-clouddk-kubernetes-cluster/modules/nodes"
+
+  api_addresses           = module.kubernetes_cluster.api_addresses
+  api_ports               = module.kubernetes_cluster.api_ports
+  bootstrap_token         = module.kubernetes_cluster.bootstrap_token
+  certificate_key         = module.kubernetes_cluster.certificate_key
+  cluster_name            = module.kubernetes_cluster.cluster_name
+  control_plane_addresses = module.kubernetes_cluster.control_plane_addresses
+  control_plane_ports     = module.kubernetes_cluster.control_plane_ports
+  master                  = false
+  node_count              = 1
+  node_memory             = 4096
+  node_pool_name          = "custom"
+  node_processors         = 2
+  provider_location       = module.kubernetes_cluster.provider_location
+  provider_token          = module.kubernetes_cluster.provider_token
+}
+```
+
+This will create a node pool with the name `custom`, which can be targeted by using the label selector `kubernetes.cloud.dk/node-pool=custom`. You should also adjust existing resources to target the `default` node pool.
+
 ## Input Variables
 
 ### cluster_name
@@ -156,6 +183,9 @@ The minimum number of processors for each node in the default worker node pool.
 
 ## Output Variables
 
+### api_addresses
+The IP addresses for the Kubernetes API.
+
 ### api_ca_certificate
 The CA certificate for the Kubernetes API.
 
@@ -171,11 +201,26 @@ The Kubernetes API load balancing statistics URLs.
 ### api_load_balancing_stats_username
 The username for the Kubernetes API load balancing statistics page.
 
+### api_ports
+The port numbers for the Kubernetes API.
+
+### bootstrap_token
+The bootstrap token for the worker nodes.
+
+### certificate_key
+The key for the certificate secret.
+
 ### config_file
 The relative path to the configuration file for use with `kubectl`.
 
 ### config_raw
 The raw configuration for use with kubectl.
+
+### control_plane_addresses
+The control plane addresses.
+
+### control_plane_ports
+The control plane ports.
 
 ### master_node_private_addresses
 The private IP addresses of the master nodes.
@@ -194,6 +239,12 @@ The public SSH key for the master nodes.
 
 ### master_node_ssh_public_key_file
 The relative path to the public SSH key for the master nodes.
+
+### provider_location
+The cluster's geographical location.
+
+### provider_token
+The API key.
 
 ### service_account_token
 The token for the Cluster Admin service account.
