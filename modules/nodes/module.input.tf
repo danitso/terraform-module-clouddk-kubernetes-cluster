@@ -47,35 +47,37 @@ variable "control_plane_ports" {
 variable "load_balancer_count" {
   description = "The number of load balancers"
   default     = 1
-  type        = "string"
+  type        = number
 }
 
 variable "load_balancer_memory" {
   description = "The minimum amount of memory (in megabytes) for each load balancer"
   default     = 1024
+  type        = number
 }
 
 variable "load_balancer_processors" {
   description = "The minimum number of processors (cores) for each load balancer"
   default     = 1
+  type        = number
 }
 
 variable "master" {
   description = "Whether to provision master nodes"
   default     = true
-  type        = "string"
+  type        = bool
 }
 
 variable "node_count" {
   description = "The number of nodes"
   default     = 2
-  type        = "string"
+  type        = number
 }
 
 variable "node_memory" {
   description = "The minimum amount of memory (in megabytes) for each node"
   default     = 4096
-  type        = "string"
+  type        = number
 }
 
 variable "node_pool_name" {
@@ -87,7 +89,7 @@ variable "node_pool_name" {
 variable "node_processors" {
   description = "The minimum number of processors (cores) for each node"
   default     = 2
-  type        = "string"
+  type        = number
 }
 
 variable "provider_location" {

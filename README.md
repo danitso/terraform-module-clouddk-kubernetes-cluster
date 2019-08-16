@@ -122,7 +122,7 @@ In case you need additional node pools with different hardware specifications or
     variable "custom_node_count" {
       description = "The node count for the 'custom' node pool"
       default     = 2
-      type        = "string"
+      type        = number
     }
     ```
 
