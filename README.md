@@ -27,7 +27,12 @@ You can create a new cluster with this configuration by following these steps:
       source = "github.com/danitso/terraform-module-clouddk-kubernetes-cluster"
 
       cluster_name   = "the-name-of-your-cluster-without-spaces-and-special-characters"
-      provider_token = "the API key from https://my.cloud.dk/account/api-key"
+      provider_token = var.provider_token
+    }
+
+    variable "provider_token" {
+      description = "The API key"
+      type        = "string"
     }
     ```
 
@@ -43,7 +48,7 @@ You can create a new cluster with this configuration by following these steps:
     docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 init
     ```
 
-1. Provision the resources
+1. Provision the cluster and provide an API key from https://my.cloud.dk/account/api-key when prompted
 
     ```bash
     docker run -v .:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
