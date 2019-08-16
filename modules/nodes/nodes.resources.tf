@@ -184,6 +184,8 @@ resource "null_resource" "node_unattended_upgrades" {
 
   provisioner "remote-exec" {
     inline = [
+      "while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done",
+      "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
       "apt-get -q install -y unattended-upgrades",
     ]
   }
