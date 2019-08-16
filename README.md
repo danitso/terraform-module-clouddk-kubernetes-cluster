@@ -81,7 +81,7 @@ module "kubernetes_node_pool_custom" {
   control_plane_addresses = module.kubernetes_cluster.control_plane_addresses
   control_plane_ports     = module.kubernetes_cluster.control_plane_ports
   master                  = false
-  node_count              = 1
+  node_count              = 2
   node_memory             = 4096
   node_pool_name          = "custom"
   node_processors         = 2
