@@ -12,7 +12,7 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
 
 ## Table of contents
 
-- [Getting started](#getting-started)
+- [Creating the cluster](#creating-the-cluster)
 - [Accessing the cluster](#accessing-the-cluster)
 - [Additional node pools](#additional-node-pools)
 - [Installed Addons](#installed-addons)
@@ -20,7 +20,7 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
     - [Input](#input)
     - [Output](#output)
 
-## Getting started
+## Creating the cluster
 
 The default cluster configuration has the following specifications, which is only recommended for development purposes:
 
@@ -60,7 +60,7 @@ You can create a new cluster with this configuration by following these steps:
     docker run -v %CD%:/workspace -it --rm danitso/terraform:0.12 init
     ```
 
-1. Provision the cluster and provide an API key from [my.cloud.dk](https://my.cloud.dk/account/api-key) when prompted
+1. Create the cluster and provide an API key from [my.cloud.dk](https://my.cloud.dk/account/api-key) when prompted
 
     ```bash
     docker run -v .:/workspace -it --rm danitso/terraform:0.12 apply -auto-approve
@@ -78,7 +78,7 @@ _NOTE: The `danitso/terraform` image contains all the custom providers developed
 
 ## Accessing the cluster
 
-If you have followed the [Getting started](#getting-started) guide without experiencing any problems, you should now be able to access the cluster with [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/):
+If you have followed the steps in [Creating the cluster](#creating-the-cluster) without experiencing any problems, you should now be able to access the cluster with [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/):
 
 ```bash
 export KUBECONFIG="$(pwd -P)/conf/the_name_of_your_cluster.conf"
@@ -109,7 +109,7 @@ The nodes may still be initializing in which case you will see the status _NotRe
 
 In case you need additional node pools with different hardware specifications or simply need to isolate certain services, you can go ahead and create a new one by following these steps:
 
-1. Append the following contents to the `kubernetes_cluster.tf` file created in [Getting started](#getting-started):
+1. Append the following contents to the `kubernetes_cluster.tf` file:
 
     ```hcl
     module "kubernetes_node_pool_custom" {
