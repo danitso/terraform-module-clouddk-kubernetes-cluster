@@ -1,9 +1,22 @@
 # Kubernetes Cluster
+
 Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.dk)
 
 > **WARNING:** This project is under active development and should be considered alpha.
 
+## Table of contents
+
+- [Requirements](#requirements)
+- [Getting started](#getting-started)
+- [Accessing the cluster](#accessing-the-cluster)
+- [Additional node pools](#additional-node-pools)
+- [Installed Addons](#installed-addons)
+- [Variables](#variables)
+    - [Input](#input)
+    - [Output](#output)
+
 ## Requirements
+
 - [Terraform](https://www.terraform.io/downloads.html) 0.12+
 - [Terraform Provider for Cloud.dk](https://github.com/danitso/terraform-provider-clouddk) 0.3+
 - [Terraform Provider for SFTP](https://github.com/danitso/terraform-provider-sftp) 0.1+
@@ -152,9 +165,9 @@ In case you need additional node pools with different hardware specifications or
 
 This will create a new node pool with the name `custom`, which can be targeted by using the label selector `kubernetes.cloud.dk/node-pool=custom`.
 
-## Addons
+## Installed addons
 
-The following addons are automatically provisioned by the module:
+The following addons are automatically installed by the module:
 
 ### [Cloud Controller Manager for Cloud.dk](https://github.com/danitso/clouddk-cloud-controller-manager)
 
@@ -164,180 +177,226 @@ Adds support for services of type `LoadBalancer` as well as other important feat
 
 Adds a virtual network inside the cluster to allow containers to communicate across nodes.
 
-## Input Variables
+## Variables
 
-### cluster_name
+### Input
+
+#### cluster_name
+
 The name of the cluster.
 
 **Default**: clouddk-kubernetes-cluster
 
-### load_balancer_count
+#### load_balancer_count
+
 The number of load balancers.
 
 **Minimum**: 1
 
 **Default**: 1
 
-### load_balancer_memory
+#### load_balancer_memory
+
 The minimum amount of memory (in megabytes) for each load balancer.
 
 **Minimum**: 512
 
 **Default**: 1024
 
-### load_balancer_processors
+#### load_balancer_processors
+
 The minimum number of processors (cores) for each load balancer.
 
 **Minimum**: 1
 
 **Default**: 1
 
-### master_node_count
+#### master_node_count
+
 The number of master nodes.
 
 **Minimum**: 3
 
 **Default**: 3
 
-### master_node_memory
+#### master_node_memory
+
 The minimum amount of memory (in megabytes) for each master node.
 
 **Minimum**: 2048
 
 **Default**: 4096
 
-### master_node_processors
+#### master_node_processors
+
 The minimum number of processors (cores) for each master node.
 
 **Minimum**: 1
 
 **Default**: 2
 
-### provider_location
+#### provider_location
+
 The cluster's geographical location.
 
 **Default**: dk1
 
-### provider_password
+#### provider_password
+
 _This variable is currently unused._
 
-### provider_token
+#### provider_token
+
 The API key.
 
-### provider_username
+#### provider_username
+
 _This variable is currently unused._
 
-### worker_node_count
+#### worker_node_count
+
 The number of worker nodes in the default worker node pool.
 
 **Minimum**: 1
 
 **Default**: 2
 
-### worker_node_memory
+#### worker_node_memory
+
 The minimum amount of memory (in megabytes) for each node in the default worker node pool.
 
 **Minimum**: 2048
 
 **Default**: 4096
 
-### worker_node_pool_name
+#### worker_node_pool_name
+
 The name of the default worker node pool.
 
 **Default**: default
 
-### worker_node_processors
+#### worker_node_processors
+
 The minimum number of processors for each node in the default worker node pool.
 
 **Minimum**: 1
 
 **Default**: 2
 
-## Output Variables
+### Output
 
-### api_addresses
+#### api_addresses
+
 The IP addresses for the Kubernetes API.
 
-### api_ca_certificate
+#### api_ca_certificate
+
 The CA certificate for the Kubernetes API.
 
-### api_endpoints
+#### api_endpoints
+
 The endpoints for the Kubernetes API.
 
-### api_load_balancing_stats_password
+#### api_load_balancing_stats_password
+
 The password for the Kubernetes API load balancing statistics page.
 
-### api_load_balancing_stats_urls
+#### api_load_balancing_stats_urls
+
 The Kubernetes API load balancing statistics URLs.
 
-### api_load_balancing_stats_username
+#### api_load_balancing_stats_username
+
 The username for the Kubernetes API load balancing statistics page.
 
-### api_ports
+#### api_ports
+
 The port numbers for the Kubernetes API.
 
-### bootstrap_token
+#### bootstrap_token
+
 The bootstrap token for the worker nodes.
 
-### certificate_key
+#### certificate_key
+
 The key for the certificate secret.
 
-### cluster_name
+#### cluster_name
+
 The name of the cluster.
 
-### config_file
+#### config_file
+
 The relative path to the configuration file for use with `kubectl`.
 
-### config_raw
+#### config_raw
+
 The raw configuration for use with kubectl.
 
-### control_plane_addresses
+#### control_plane_addresses
+
 The control plane addresses.
 
-### control_plane_ports
+#### control_plane_ports
+
 The control plane ports.
 
-### master_node_private_addresses
+#### master_node_private_addresses
+
 The private IP addresses of the master nodes.
 
-### master_node_public_addresses
+#### master_node_public_addresses
+
 The public IP addresses of the master nodes.
 
-### master_node_ssh_private_key
+#### master_node_ssh_private_key
+
 The private SSH key for the master nodes.
 
-### master_node_ssh_private_key_file
+#### master_node_ssh_private_key_file
+
 The relative path to the private SSH key for the master nodes.
 
-### master_node_ssh_public_key
+#### master_node_ssh_public_key
+
 The public SSH key for the master nodes.
 
-### master_node_ssh_public_key_file
+#### master_node_ssh_public_key_file
+
 The relative path to the public SSH key for the master nodes.
 
-### provider_location
+#### provider_location
+
 The cluster's geographical location.
 
-### provider_token
+#### provider_token
+
 The API key.
 
-### service_account_token
+#### service_account_token
+
 The token for the Cluster Admin service account.
 
-### worker_node_private_addresses
+#### worker_node_private_addresses
+
 The private IP addresses of the worker nodes.
 
-### worker_node_public_addresses
+#### worker_node_public_addresses
+
 The public IP addresses of the worker nodes.
 
-### worker_node_ssh_private_key
+#### worker_node_ssh_private_key
+
 The private SSH key for the worker nodes.
 
-### worker_node_ssh_private_key_file
+#### worker_node_ssh_private_key_file
+
 The relative path to the private SSH key for the worker nodes.
 
-### worker_node_ssh_public_key
+#### worker_node_ssh_public_key
+
 The public SSH key for the worker nodes.
 
-### worker_node_ssh_public_key_file
+#### worker_node_ssh_public_key_file
+
 The relative path to the public SSH key for the worker nodes.
