@@ -16,7 +16,7 @@ This module provisions the [Cloud Controller Manager for Cloud.dk](https://githu
 
 ### Container Network Interface
 
-This module provisions the [Weave CNI Plugin](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/). The plugin adds a virtual network to the cluster to allow containers to communicate across nodes.
+This module provisions the [Weave CNI Plugin](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/). The plugin adds a virtual network inside the cluster to allow containers to communicate across nodes.
 
 ## Getting started
 
