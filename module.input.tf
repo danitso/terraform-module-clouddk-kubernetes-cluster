@@ -4,7 +4,7 @@
 
 variable "cluster_name" {
   description = "The name of the cluster"
-  default     = "clouddk-kubernetes-cluster"
+  default     = "clouddk-cluster"
   type        = string
 }
 
