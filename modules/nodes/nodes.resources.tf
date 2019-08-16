@@ -31,6 +31,7 @@ resource "clouddk_server" "node" {
       "export DEBIAN_FRONTEND=noninteractive",
       "while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done",
       "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
+      "sed -i 's/us.archive.ubuntu.com/mirrors.dotsrc.org/' /etc/apt/sources.list",
       "apt-get -q update",
       "apt-get -q install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
       "swapoff -a",
@@ -215,7 +216,7 @@ Unattended-Upgrade::InstallOnShutdown "false";
 Unattended-Upgrade::MinimalSteps "true";
 Unattended-Upgrade::OnlyOnACPower "false";
 Unattended-Upgrade::Package-Blacklist {
-    "containerd.io"
+    "containerd.io";
     "docker-ce";
     "docker-ce-cli";
     "kubeadm";
