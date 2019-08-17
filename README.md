@@ -19,6 +19,8 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
 - [Variables](#variables)
     - [Input](#input)
     - [Output](#output)
+- [Frequently asked questions](#frequently-asked-questions)
+    - [Why are the nodes rebooting around midnight?](#why-are-the-nodes-rebooting-around-midnight)
 
 ## Creating the cluster
 
@@ -399,3 +401,27 @@ The public SSH key for the worker nodes.
 #### worker_node_ssh_public_key_file
 
 The relative path to the public SSH key for the worker nodes.
+
+## Frequently asked questions
+
+### Why are the nodes rebooting around midnight?
+
+Automatic OS updates are scheduled to run on the nodes on a daily basis. These updates may require a reboot to take effect in which case a reboot is scheduled for 00:00-01:00 UTC. The nodes in each pool will reboot 15 minutes apart as long as you have a maximum of 4 nodes.
+
+* Node 1 reboots at 00:00 UTC
+* Node 2 reboots at 00:15 UTC
+* Node 3 reboots at 00:30 UTC
+* Node 4 reboots at 00:45 UTC
+
+In case you have more than 4 nodes in a pool, i.e. 8 nodes, the reboots will take place in this order:
+
+* Node 1 and 5 reboots at 00:00 UTC
+* Node 2 and 6 reboots at 00:15 UTC
+* Node 3 and 7 reboots at 00:30 UTC
+* Node 4 and 8 reboots at 00:45 UTC
+
+The delay between each reboot is meant to reduce the impact on a pool. However, in case the pool has only 2 nodes, you will still lose 50% of the capacity for the duration of the reboot (about a minute).
+
+We recommend that you have a multiple of 4 nodes available in a worker pool to keep the capacity at 75%.
+
+**NOTE**: Automatic OS updates are disabled for load balancers and needs to be maintained manually. This should reduce the risk of a cluster outage in case the cluster only has a single API load balancer.
