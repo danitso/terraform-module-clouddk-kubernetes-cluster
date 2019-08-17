@@ -131,6 +131,7 @@ In case you need additional node pools with different hardware specifications or
       node_processors         = 2
       provider_location       = module.kubernetes_cluster.provider_location
       provider_token          = module.kubernetes_cluster.provider_token
+      unattended_upgrades     = true
     }
 
     variable "custom_node_count" {
