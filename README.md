@@ -15,7 +15,7 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
 - [Creating the cluster](#creating-the-cluster)
 - [Accessing the cluster](#accessing-the-cluster)
 - [Additional node pools](#additional-node-pools)
-- [Installed Addons](#installed-addons)
+- [Installed addons](#installed-addons)
 - [Variables](#variables)
     - [Input](#input)
     - [Output](#output)
