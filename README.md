@@ -433,7 +433,7 @@ In case you have more than 4 nodes in a pool, i.e. 8 nodes, the reboots will tak
 * Node 3 and 7 reboots at 00:30 UTC
 * Node 4 and 8 reboots at 00:45 UTC
 
-The delay between each reboot is meant to reduce the impact on a pool. However, in case the pool has only 2 nodes, you will still lose 50% of the capacity for the duration of the reboot (about a minute).
+The delay between each reboot is meant to reduce the impact on a pool. However, in case the pool has only 2 nodes, you will still lose 50% of the capacity for the duration of the reboot (up to 5 minutes).
 
 We recommend that you have a multiple of 4 nodes available in a worker pool to keep the capacity at 75%.
 
