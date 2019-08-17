@@ -419,7 +419,7 @@ The relative path to the public SSH key for the worker nodes.
 
 ### Why are the nodes rebooting around midnight?
 
-Unattended OS upgrades are scheduled to run on the nodes on a daily basis. These upgrades may require a reboot to in order to take effect in which case a reboot is scheduled for 00:00 UTC and onwards. The nodes in each pool will reboot 15 minutes apart, which results in a schedule similar to this:
+Unattended OS upgrades are scheduled to run on the nodes on a daily basis. These upgrades may require a reboot in order to take effect in which case a reboot is scheduled for 00:00 UTC and onwards. The nodes in each pool will reboot 15 minutes apart, which results in a schedule similar to this:
 
 * Node 1 reboots at 00:00 UTC
 * Node 2 reboots at 00:15 UTC
