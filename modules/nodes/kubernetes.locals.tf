@@ -28,7 +28,7 @@ locals {
   )
   kubernetes_node_pool_label = "kubernetes.cloud.dk/node-pool=${var.master ? "master" : var.node_pool_name}"
   kubernetes_packages = [
-    "containerd.io",
+    "containerd.io=1.2.6-3",
     "docker-ce=5:18.09.8~3-0~ubuntu-xenial",
     "docker-ce-cli=5:18.09.8~3-0~ubuntu-xenial",
     "kubeadm=${local.kubernetes_version}-00",
