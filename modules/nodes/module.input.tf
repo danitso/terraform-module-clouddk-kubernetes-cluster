@@ -102,3 +102,9 @@ variable "provider_token" {
   description = "The API key"
   type        = string
 }
+
+variable "unattended_upgrades" {
+  description = "Whether to enable unattended OS upgrades for the nodes"
+  default     = true
+  type        = bool
+}

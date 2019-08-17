@@ -3,7 +3,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 data "sftp_remote_file" "kubernetes_token" {
-  count = "${var.master ? 1 : 0}"
+  count = var.master ? 1 : 0
 
   allow_missing = true
 

@@ -181,7 +181,7 @@ EOF
 # STEP 4: Configure unattended upgrades
 #===============================================================================
 resource "null_resource" "node_unattended_upgrades" {
-  count      = length(clouddk_server.node)
+  count      = var.unattended_upgrades ? length(clouddk_server.node) : 0
   depends_on = ["null_resource.node_tuning"]
 
   connection {
@@ -246,5 +246,17 @@ Unattended-Upgrade::Skip-Updates-On-Metered-Connections "false";
 Unattended-Upgrade::SyslogEnable "true";
 Unattended-Upgrade::SyslogFacility "daemon";
 EOF
+  }
+
+  provisioner "remote-exec" {
+    when   = "destroy"
+    inline = [
+      "export DEBIAN_FRONTEND=noninteractive",
+      "while ps aux | grep -q [a]pt; do sleep 1; done",
+      "while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do sleep 1; done",
+      "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
+      "apt-get -q remove -y unattended-upgrades",
+      "rm -f /etc/apt/apt.conf.d/20auto-upgrades /etc/apt/apt.conf.d/50unattended-upgrades",
+    ]
   }
 }

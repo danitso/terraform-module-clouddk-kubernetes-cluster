@@ -236,6 +236,12 @@ The minimum number of processors (cores) for each master node.
 
 **Default**: 2
 
+#### master_node_unattended_upgrades
+
+Whether to enable unattended OS upgrades for the master nodes.
+
+**Default**: true
+
 #### provider_location
 
 The cluster's geographical location.
@@ -283,6 +289,12 @@ The minimum number of processors for each node in the default worker node pool.
 **Minimum**: 1
 
 **Default**: 2
+
+#### worker_node_unattended_upgrades
+
+Whether to enable unattended OS upgrades for the worker nodes.
+
+**Default**: true
 
 ### Output
 
@@ -406,7 +418,7 @@ The relative path to the public SSH key for the worker nodes.
 
 ### Why are the nodes rebooting around midnight?
 
-Automatic OS updates are scheduled to run on the nodes on a daily basis. These updates may require a reboot to take effect in which case a reboot is scheduled for 00:00-01:00 UTC. The nodes in each pool will reboot 15 minutes apart as long as you have a maximum of 4 nodes.
+Unattended OS upgrades are scheduled to run on the nodes on a daily basis. These upgrades may require a reboot to take effect in which case a reboot is scheduled for 00:00-01:00 UTC. The nodes in each pool will reboot 15 minutes apart as long as you have a maximum of 4 nodes.
 
 * Node 1 reboots at 00:00 UTC
 * Node 2 reboots at 00:15 UTC
@@ -424,4 +436,6 @@ The delay between each reboot is meant to reduce the impact on a pool. However, 
 
 We recommend that you have a multiple of 4 nodes available in a worker pool to keep the capacity at 75%.
 
-**NOTE**: Automatic OS updates are disabled for load balancers and needs to be maintained manually. This should reduce the risk of a cluster outage in case the cluster only has a single API load balancer.
+You can also disable unattended OS upgrades by setting the two input variables [master_node_unattended_upgrades](#master_node_unattended_upgrades) and [worker_node_unattended_upgrades](#worker_node_unattended_upgrades) to `false`. However, this is not recommended unless you have another maintenance procedure in place.
+
+**NOTE**: Unattended OS upgrades are permanently disabled for load balancers and needs to be maintained manually. This should reduce the risk of a cluster outage in case the cluster only has a single API load balancer.

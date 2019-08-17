@@ -44,6 +44,12 @@ variable "master_node_processors" {
   type        = number
 }
 
+variable "master_node_unattended_upgrades" {
+  description = "Whether to enable unattended OS upgrades for the master nodes"
+  default     = true
+  type        = bool
+}
+
 variable "provider_location" {
   description = "The cluster's geographical location"
   default     = "dk1"
@@ -89,4 +95,10 @@ variable "worker_node_processors" {
   description = "The minimum number of processors for each node in the default worker node pool"
   default     = 2
   type        = number
+}
+
+variable "worker_node_unattended_upgrades" {
+  description = "Whether to enable unattended OS upgrades for the worker nodes"
+  default     = true
+  type        = bool
 }

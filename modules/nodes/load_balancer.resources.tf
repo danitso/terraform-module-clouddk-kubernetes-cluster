@@ -5,7 +5,7 @@
 # STEP 1: Create load balancer servers
 #===============================================================================
 resource "clouddk_server" "load_balancer" {
-  count = "${var.master ? max(var.load_balancer_count, 1) : 0}"
+  count = var.master ? max(var.load_balancer_count, 1) : 0
 
   hostname      = "k8s-load-balancer-${var.cluster_name}-${count.index + 1}"
   label         = "k8s-load-balancer-${var.cluster_name}-${count.index + 1}"
@@ -120,13 +120,13 @@ resource "null_resource" "load_balancer_tuning" {
 # STEP 2: Generate credentials for HAProxy statistics
 #===============================================================================
 resource "random_string" "load_balancer_stats_password" {
-  count   = "${var.master ? 1 : 0}"
+  count   = var.master ? 1 : 0
   length  = 32
   special = false
 }
 
 resource "random_string" "load_balancer_stats_username" {
-  count   = "${var.master ? 1 : 0}"
+  count   = var.master ? 1 : 0
   length  = 16
   special = false
 }

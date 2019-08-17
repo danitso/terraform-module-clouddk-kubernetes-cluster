@@ -18,6 +18,7 @@ module "master_nodes" {
   node_processors          = var.master_node_processors
   provider_location        = var.provider_location
   provider_token           = var.provider_token
+  unattended_upgrades      = var.master_node_unattended_upgrades
 }
 #===============================================================================
 # STEP 2: Create worker nodes (pool: default)
@@ -39,4 +40,5 @@ module "worker_nodes" {
   node_processors         = var.worker_node_processors
   provider_location       = var.provider_location
   provider_token          = var.provider_token
+  unattended_upgrades     = var.worker_node_unattended_upgrades
 }
