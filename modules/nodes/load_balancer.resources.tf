@@ -26,6 +26,16 @@ resource "clouddk_server" "load_balancer" {
     timeout  = "5m"
   }
 
+  provisioner "file" {
+    destination = "/etc/apt/apt.conf.d/00auto-conf"
+    content     = <<EOF
+Dpkg::Options {
+    "--force-confdef";
+    "--force-confold";
+}
+EOF
+  }
+
   provisioner "remote-exec" {
     inline = [
       "export DEBIAN_FRONTEND=noninteractive",
@@ -34,6 +44,8 @@ resource "clouddk_server" "load_balancer" {
       "while fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done",
       "sed -i 's/us.archive.ubuntu.com/mirrors.dotsrc.org/' /etc/apt/sources.list",
       "apt-get -q update",
+      "apt-get -q upgrade -y",
+      "apt-get -q dist-upgrade -y",
       "apt-get -q install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
       "swapoff -a",
       "sed -i '/ swap / s/^/#/' /etc/fstab",
