@@ -238,6 +238,7 @@ resource "null_resource" "kubernetes_join" {
   provisioner "remote-exec" {
     when   = "destroy"
     inline = [
+      "[ ! -f /etc/kubernetes/bootstrap-kubelet.conf ] && exit 0",
       "kubeadm reset -f",
     ]
   }
@@ -289,6 +290,7 @@ EOT
   provisioner "remote-exec" {
     when = "destroy"
     inline = [
+      "[ ! -f /etc/kubernetes/admin.conf ] && exit 0",
       "export KUBECONFIG=/etc/kubernetes/admin.conf",
       "echo Deleting all service definitions to force load balancers to be destroyed",
       "kubectl delete svc --all --all-namespaces",
@@ -344,6 +346,7 @@ resource "null_resource" "kubernetes_service_account" {
 
   provisioner "remote-exec" {
     inline = [
+      "[ -f /etc/kubernetes/token.txt ] && exit 0",
       "export KUBECONFIG=/etc/kubernetes/admin.conf",
       "while ! kubectl create -n kube-system serviceaccount admin; do sleep 1; done",
       "kubectl describe secret $(kubectl get secrets | grep admin | cut -f1 -d' ') | grep -E '^token' | cut -f2 -d':' | tr -d ' ' > /etc/kubernetes/token.txt",

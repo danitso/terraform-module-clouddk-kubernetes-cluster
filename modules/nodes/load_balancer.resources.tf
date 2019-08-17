@@ -50,7 +50,7 @@ EOF
       "swapoff -a",
       "sed -i '/ swap / s/^/#/' /etc/fstab",
       "echo '${trimspace(tls_private_key.private_ssh_key.public_key_openssh)}' >> ~/.ssh/authorized_keys",
-      "sed -i 's/#?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config",
+      "sed -i 's/#\\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config",
       "systemctl restart ssh",
       "add-apt-repository -y ppa:vbernat/haproxy-2.0",
       "apt-get -q update",
