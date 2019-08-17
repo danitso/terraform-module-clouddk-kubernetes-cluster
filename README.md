@@ -426,9 +426,6 @@ Unattended OS upgrades are scheduled to run on the nodes on a daily basis. These
 * Node 3 reboots at 00:30 UTC
 * Node 4 reboots at 00:45 UTC
 * Node 5 reboots at 01:00 UTC
-* Node 6 reboots at 01:15 UTC
-* Node 7 reboots at 01:30 UTC
-* Node 8 reboots at 01:45 UTC
 
 The delay between each reboot is meant to reduce the impact on a pool. However, in case the pool has only 2 nodes, you will still lose 50% of the capacity for the duration of the reboot (up to 5 minutes). That's why we recommend that you always provision at least 3 nodes per pool for production clusters.
 
