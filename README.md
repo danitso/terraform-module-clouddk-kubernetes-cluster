@@ -430,9 +430,7 @@ Unattended OS upgrades are scheduled to run on the nodes on a daily basis. These
 * Node 7 reboots at 01:30 UTC
 * Node 8 reboots at 01:45 UTC
 
-The delay between each reboot is meant to reduce the impact on a pool. However, in case the pool has only 2 nodes, you will still lose 50% of the capacity for the duration of the reboot (up to 5 minutes).
-
-We recommend that you have a multiple of 4 nodes available in a worker pool to prevent the capacity from dropping below 75%.
+The delay between each reboot is meant to reduce the impact on a pool. However, in case the pool has only 2 nodes, you will still lose 50% of the capacity for the duration of the reboot (up to 5 minutes). That's why we recommend that you always provision at least 3 nodes per pool for production clusters.
 
 You can also disable unattended OS upgrades by setting the two input variables [master_node_unattended_upgrades](#master_node_unattended_upgrades) and [worker_node_unattended_upgrades](#worker_node_unattended_upgrades) to `false`. However, this is not recommended unless you have another maintenance procedure in place.
 
