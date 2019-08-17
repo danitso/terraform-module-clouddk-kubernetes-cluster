@@ -419,23 +419,20 @@ The relative path to the public SSH key for the worker nodes.
 
 ### Why are the nodes rebooting around midnight?
 
-Unattended OS upgrades are scheduled to run on the nodes on a daily basis. These upgrades may require a reboot to take effect in which case a reboot is scheduled for 00:00-01:00 UTC. The nodes in each pool will reboot 15 minutes apart as long as you have a maximum of 4 nodes.
+Unattended OS upgrades are scheduled to run on the nodes on a daily basis. These upgrades may require a reboot to in order to take effect in which case a reboot is scheduled for 00:00 UTC and onwards. The nodes in each pool will reboot 15 minutes apart, which results in a schedule similar to this:
 
 * Node 1 reboots at 00:00 UTC
 * Node 2 reboots at 00:15 UTC
 * Node 3 reboots at 00:30 UTC
 * Node 4 reboots at 00:45 UTC
-
-In case you have more than 4 nodes in a pool, i.e. 8 nodes, the reboots will take place in this order:
-
-* Node 1 and 5 reboots at 00:00 UTC
-* Node 2 and 6 reboots at 00:15 UTC
-* Node 3 and 7 reboots at 00:30 UTC
-* Node 4 and 8 reboots at 00:45 UTC
+* Node 5 reboots at 01:00 UTC
+* Node 6 reboots at 01:15 UTC
+* Node 7 reboots at 01:30 UTC
+* Node 8 reboots at 01:45 UTC
 
 The delay between each reboot is meant to reduce the impact on a pool. However, in case the pool has only 2 nodes, you will still lose 50% of the capacity for the duration of the reboot (up to 5 minutes).
 
-We recommend that you have a multiple of 4 nodes available in a worker pool to keep the capacity at 75%.
+We recommend that you have a multiple of 4 nodes available in a worker pool to prevent the capacity from dropping below 75%.
 
 You can also disable unattended OS upgrades by setting the two input variables [master_node_unattended_upgrades](#master_node_unattended_upgrades) and [worker_node_unattended_upgrades](#worker_node_unattended_upgrades) to `false`. However, this is not recommended unless you have another maintenance procedure in place.
 

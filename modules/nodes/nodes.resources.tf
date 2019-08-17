@@ -226,7 +226,7 @@ Unattended-Upgrade::Allowed-Origins {
     "$${distro_id}:$${distro_codename}-updates";
 };
 Unattended-Upgrade::Automatic-Reboot "true";
-Unattended-Upgrade::Automatic-Reboot-Time "00:${format("%02d", count.index * 15 % 60)}";
+Unattended-Upgrade::Automatic-Reboot-Time "${format("%02d", floor(count.index / 4))}:${format("%02d", count.index * 15 % 60)}";
 Unattended-Upgrade::AutoFixInterruptedDpkg "true";
 Unattended-Upgrade::DevRelease "false";
 Unattended-Upgrade::InstallOnShutdown "false";
