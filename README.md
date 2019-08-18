@@ -1,4 +1,4 @@
-# Kubernetes Cluster
+# Kubernetes Cluster on Cloud.dk
 
 Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.dk)
 
