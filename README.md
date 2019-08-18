@@ -20,7 +20,7 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
     - [Input](#input)
     - [Output](#output)
 - [Frequently asked questions](#frequently-asked-questions)
-    - [Why are the nodes rebooting around midnight?](#why-are-the-nodes-rebooting-around-midnight)
+    - [Why are the nodes occasionally rebooting after midnight?](#why-are-the-nodes-occasionally-rebooting-after-midnight)
 
 ## Creating the cluster
 
@@ -417,7 +417,7 @@ The relative path to the public SSH key for the worker nodes.
 
 ## Frequently asked questions
 
-### Why are the nodes rebooting around midnight?
+### Why are the nodes occasionally rebooting after midnight?
 
 Unattended OS upgrades are scheduled to run on the nodes on a daily basis. These upgrades may require a reboot in order to take effect in which case a reboot is scheduled for 00:00 UTC and onwards. The nodes in each pool will reboot 15 minutes apart, which results in a schedule similar to this:
 
