@@ -431,4 +431,4 @@ The delay between each reboot is meant to reduce the impact on a pool. However, 
 
 You can also disable unattended OS upgrades by setting the two input variables [master_node_unattended_upgrades](#master_node_unattended_upgrades) and [worker_node_unattended_upgrades](#worker_node_unattended_upgrades) to `false`. However, this is not recommended unless you have another maintenance procedure in place.
 
-**NOTE**: Unattended OS upgrades are permanently disabled for load balancers and needs to be maintained manually. This should reduce the risk of a cluster outage in case the cluster only has a single API load balancer.
+**NOTE**: Unattended OS upgrades are permanently disabled for load balancers and needs to be maintained manually. This should reduce the risk of a cluster outage in case the cluster only has a single load balancer for the API.
