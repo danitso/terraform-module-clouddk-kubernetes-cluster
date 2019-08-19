@@ -9,7 +9,7 @@ resource "clouddk_server" "node" {
 
   hostname      = "k8s-${local.node_type}-node-${var.cluster_name}${var.master ? "" : "-${var.node_pool_name}"}-${count.index + 1}"
   label         = "k8s-${local.node_type}-node-${var.cluster_name}${var.master ? "" : "-${var.node_pool_name}"}-${count.index + 1}"
-  root_password = "${random_string.root_password.result}"
+  root_password = random_string.root_password.result
 
   location_id = var.provider_location
   package_id  = module.node_server_selector.server_type
@@ -66,7 +66,7 @@ resource "null_resource" "node_tuning" {
     type  = "ssh"
     agent = false
 
-    host        = "${element(flatten(clouddk_server.node[count.index].network_interface_addresses), 0)}"
+    host        = element(flatten(clouddk_server.node[count.index].network_interface_addresses), 0)
     port        = 22
     user        = "root"
     private_key = tls_private_key.private_ssh_key.private_key_pem
@@ -109,8 +109,8 @@ resource "null_resource" "node_tuning" {
   }
 
   triggers = {
-    limits_conf_hash = "${md5(file("${path.module}/etc/security/limits.conf"))}"
-    sysctl_conf_hash = "${md5(file("${path.module}/etc/sysctl.d/20-maximum-performance.conf"))}"
+    limits_conf_hash = md5(file("${path.module}/etc/security/limits.conf"))
+    sysctl_conf_hash = md5(file("${path.module}/etc/sysctl.d/20-maximum-performance.conf"))
   }
 }
 #===============================================================================
@@ -124,7 +124,7 @@ resource "null_resource" "node_firewall_rules" {
     type  = "ssh"
     agent = false
 
-    host        = "${element(flatten(clouddk_server.node[count.index].network_interface_addresses), 0)}"
+    host        = element(flatten(clouddk_server.node[count.index].network_interface_addresses), 0)
     port        = 22
     user        = "root"
     private_key = tls_private_key.private_ssh_key.private_key_pem
@@ -212,7 +212,7 @@ resource "null_resource" "node_unattended_upgrades" {
     type  = "ssh"
     agent = false
 
-    host        = "${element(flatten(clouddk_server.node[count.index].network_interface_addresses), 0)}"
+    host        = element(flatten(clouddk_server.node[count.index].network_interface_addresses), 0)
     port        = 22
     user        = "root"
     private_key = tls_private_key.private_ssh_key.private_key_pem

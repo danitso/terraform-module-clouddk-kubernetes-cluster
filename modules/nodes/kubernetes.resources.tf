@@ -63,26 +63,26 @@ EOF
 # STEP 2: Generate control plane port numbers and CA certificate
 #===============================================================================
 resource "random_shuffle" "api_ports" {
-  count        = "${var.master ? 1 : 0}"
+  count        = var.master ? 1 : 0
   input        = ["6443"]
   result_count = length(clouddk_server.load_balancer)
 }
 
 resource "random_shuffle" "control_plane_ports" {
-  count        = "${var.master ? 1 : 0}"
+  count        = var.master ? 1 : 0
   input        = ["6443"]
   result_count = length(clouddk_server.node)
 }
 
 resource "tls_private_key" "ca_private_key" {
-  count = "${var.master ? 1 : 0}"
+  count = var.master ? 1 : 0
 
   algorithm = "RSA"
   rsa_bits  = 2048
 }
 
 resource "tls_self_signed_cert" "ca_certificate" {
-  count = "${var.master ? 1 : 0}"
+  count = var.master ? 1 : 0
 
   is_ca_certificate     = true
   key_algorithm         = "RSA"
@@ -112,7 +112,7 @@ resource "tls_self_signed_cert" "ca_certificate" {
 # STEP 3: Initialize cluster
 #===============================================================================
 resource "null_resource" "kubernetes_init" {
-  count      = "${var.master ? 1 : 0}"
+  count      = var.master ? 1 : 0
   depends_on = ["null_resource.kubernetes_install", "null_resource.load_balancer_configuration"]
 
   connection {
@@ -198,15 +198,15 @@ EOT
 }
 
 resource "random_string" "kubernetes_bootstrap_token" {
-  count = "${var.master ? 2 : 0}"
+  count = var.master ? 2 : 0
 
-  length  = "${count.index == 0 ? 6 : 16}"
+  length  = count.index == 0 ? 6 : 16
   special = false
   upper   = false
 }
 
 resource "random_id" "kubernetes_certificate_key" {
-  count = "${var.master ? 1 : 0}"
+  count = var.master ? 1 : 0
 
   byte_length = 32
 }
@@ -214,7 +214,7 @@ resource "random_id" "kubernetes_certificate_key" {
 # STEP 4: Join cluster
 #===============================================================================
 resource "null_resource" "kubernetes_join" {
-  count      = "${max(var.master ? length(clouddk_server.node) - 1 : length(clouddk_server.node), 0)}"
+  count      = max(var.master ? length(clouddk_server.node) - 1 : length(clouddk_server.node), 0)
   depends_on = ["null_resource.kubernetes_init"]
 
   connection {
@@ -247,7 +247,7 @@ resource "null_resource" "kubernetes_join" {
 # STEP 5: Deploy cloud controller
 #===============================================================================
 resource "null_resource" "kubernetes_cloud_controller" {
-  count      = "${var.master ? 1 : 0}"
+  count      = var.master ? 1 : 0
   depends_on = ["null_resource.kubernetes_join"]
 
   connection {
@@ -302,7 +302,7 @@ EOT
 # STEP 6: Deploy network controller
 #===============================================================================
 resource "null_resource" "kubernetes_network" {
-  count      = "${var.master ? 1 : 0}"
+  count      = var.master ? 1 : 0
   depends_on = ["null_resource.kubernetes_cloud_controller"]
 
   connection {
@@ -330,7 +330,7 @@ resource "null_resource" "kubernetes_network" {
 # STEP 7: Create service account
 #===============================================================================
 resource "null_resource" "kubernetes_service_account" {
-  count      = "${var.master ? 1 : 0}"
+  count      = var.master ? 1 : 0
   depends_on = ["null_resource.kubernetes_network"]
 
   connection {
@@ -358,7 +358,7 @@ resource "null_resource" "kubernetes_service_account" {
 # STEP 8: Create local KUBECONFIG file
 #===============================================================================
 resource "local_file" "kubernetes_config" {
-  count      = "${var.master ? 1 : 0}"
+  count      = var.master ? 1 : 0
   depends_on = ["null_resource.kubernetes_service_account"]
 
   filename          = "${path.root}/conf/${replace(var.cluster_name, "/[^A-Za-z0-9]+/", "_")}.conf"

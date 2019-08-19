@@ -9,7 +9,7 @@ resource "clouddk_server" "load_balancer" {
 
   hostname      = "k8s-load-balancer-${var.cluster_name}-${count.index + 1}"
   label         = "k8s-load-balancer-${var.cluster_name}-${count.index + 1}"
-  root_password = "${random_string.root_password.result}"
+  root_password = random_string.root_password.result
 
   location_id = var.provider_location
   package_id  = module.load_balancer_server_selector.server_type
@@ -19,10 +19,10 @@ resource "clouddk_server" "load_balancer" {
     type  = "ssh"
     agent = false
 
-    host     = "${element(flatten(self.network_interface_addresses), 0)}"
+    host     = element(flatten(self.network_interface_addresses), 0)
     port     = 22
     user     = "root"
-    password = "${random_string.root_password.result}"
+    password = random_string.root_password.result
     timeout  = "5m"
   }
 
@@ -69,7 +69,7 @@ resource "null_resource" "load_balancer_tuning" {
     type  = "ssh"
     agent = false
 
-    host        = "${element(flatten(clouddk_server.load_balancer[count.index].network_interface_addresses), 0)}"
+    host        = element(flatten(clouddk_server.load_balancer[count.index].network_interface_addresses), 0)
     port        = 22
     user        = "root"
     private_key = tls_private_key.private_ssh_key.private_key_pem
@@ -111,9 +111,9 @@ resource "null_resource" "load_balancer_tuning" {
   }
 
   triggers = {
-    limits_conf_hash  = "${md5(file("${path.module}/etc/security/limits.conf"))}"
-    sysctl_conf_hash  = "${md5(file("${path.module}/etc/sysctl.d/20-maximum-performance.conf"))}"
-    haproxy_conf_hash = "${md5(file("${path.module}/etc/systemd/system/haproxy.service.d/override.conf"))}"
+    limits_conf_hash  = md5(file("${path.module}/etc/security/limits.conf"))
+    sysctl_conf_hash  = md5(file("${path.module}/etc/sysctl.d/20-maximum-performance.conf"))
+    haproxy_conf_hash = md5(file("${path.module}/etc/systemd/system/haproxy.service.d/override.conf"))
   }
 }
 #===============================================================================
@@ -141,7 +141,7 @@ resource "null_resource" "load_balancer_configuration" {
     type  = "ssh"
     agent = false
 
-    host        = "${element(flatten(clouddk_server.load_balancer[count.index].network_interface_addresses), 0)}"
+    host        = element(flatten(clouddk_server.load_balancer[count.index].network_interface_addresses), 0)
     port        = 22
     user        = "root"
     private_key = tls_private_key.private_ssh_key.private_key_pem
@@ -163,14 +163,15 @@ resource "null_resource" "load_balancer_configuration" {
   }
 
   triggers = {
-    config_script_hash = "${md5(file("${path.module}/scripts/haproxy-cfg.sh"))}"
-    listener_addresses = "${join("", local.load_balancer_listener_addresses)}"
-    listener_ports     = "${join("", local.load_balancer_listener_ports)}"
-    listener_timeouts  = "${join("", local.load_balancer_listener_timeouts)}"
-    stats_password     = "${md5(element(concat(random_string.load_balancer_stats_password.*.result, list("")), 0))}"
-    stats_username     = "${element(concat(random_string.load_balancer_stats_username.*.result, list("")), 0)}"
-    target_addresses   = "${join("", local.load_balancer_target_addresses)}"
-    target_ports       = "${join("", local.load_balancer_target_ports)}"
-    targer_timeouts    = "${join("", local.load_balancer_target_timeouts)}"
+    config_script_hash = md5(file("${path.module}/scripts/haproxy-cfg.sh"))
+    listener_addresses = join("", local.load_balancer_listener_addresses)
+    listener_ports     = join("", local.load_balancer_listener_ports)
+    listener_timeouts  = join("", local.load_balancer_listener_timeouts)
+    package_id         = module.load_balancer_server_selector.server_type
+    stats_password     = md5(element(concat(random_string.load_balancer_stats_password.*.result, list("")), 0))
+    stats_username     = element(concat(random_string.load_balancer_stats_username.*.result, list("")), 0)
+    target_addresses   = join("", local.load_balancer_target_addresses)
+    target_ports       = join("", local.load_balancer_target_ports)
+    targer_timeouts    = join("", local.load_balancer_target_timeouts)
   }
 }

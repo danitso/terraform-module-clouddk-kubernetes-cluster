@@ -3,5 +3,5 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 locals {
-  node_type = "${var.master ? "master" : "worker"}"
+  node_type = var.master ? "master" : "worker"
 }
