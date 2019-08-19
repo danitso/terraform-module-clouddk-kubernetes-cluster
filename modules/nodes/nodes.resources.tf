@@ -46,7 +46,7 @@ EOF
       "apt-get -q update",
       "apt-get -q upgrade -y",
       "apt-get -q dist-upgrade -y",
-      "apt-get -q install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common",
+      "apt-get -q install -y apt-transport-https ca-certificates curl gnupg-agent ipset software-properties-common",
       "swapoff -a",
       "sed -i '/ swap / s/^/#/' /etc/fstab",
       "echo '${trimspace(tls_private_key.private_ssh_key.public_key_openssh)}' >> ~/.ssh/authorized_keys",
@@ -132,44 +132,68 @@ resource "null_resource" "node_firewall_rules" {
   }
 
   provisioner "file" {
-    destination = "/etc/network/if-up.d/default-firewall-rules"
+    destination = "/etc/network/if-up.d/default-firewall-rules-new"
     content     = <<EOF
 #!/bin/sh
 # Skip applying the firewall rules for interfaces other than eth0
+
 if [ "$IFACE" != "eth0" ]; then
   exit 0
 fi
 
-# Apply the firewall rules for etcd.
-iptables -D INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP
-iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 2379:2380 -j ACCEPT
+# Create the ipset for the control plane nodes.
 
-iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 2379:2380 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP
+if ! ipset list | grep -q -i 'Name: nodes'; then
+  ipset create nodes hash:ip hashsize 1024
+fi
+
+ipset flush nodes
+
+ipset add nodes 127.0.0.1
+ipset add nodes ${join(" && ipset add nodes ", local.kubernetes_control_plane_addresses)}
+
+# Create the ipset for the pods.
+
+if ! ipset list | grep -q -i 'Name: pods'; then
+  ipset create pods nethash
+fi
+
+ipset flush pods
+
+ipset add pods ${local.kubernetes_subnet}
+
+# Apply the firewall rules for etcd.
+
+if ! iptables -L -n | grep -q -i 'etcd: managed by terraform'; then
+  iptables -I INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP -m comment --comment 'etcd: managed by terraform'
+  iptables -I INPUT -i eth0 -p tcp --dport 2379:2380 -m set --match-set nodes src -j ACCEPT -m comment --comment 'etcd: managed by terraform'
+fi
 
 # Apply the firewall rules for kubernetes.
-iptables -D INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP
-iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 10250:10255 -j ACCEPT
 
-iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 10250:10255 -j ACCEPT
-iptables -A INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP
+if ! iptables -L -n | grep -q -i 'kubernetes: managed by terraform'; then
+  iptables -I INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP
+  iptables -I INPUT -i eth0 -p tcp --dport 10250:10255 -m set --match-set pods src -j ACCEPT -m comment --comment 'kubernetes: managed by terraform'
+  iptables -I INPUT -i eth0 -p tcp --dport 10250:10255 -m set --match-set nodes src -j ACCEPT -m comment --comment 'kubernetes: managed by terraform'
+fi
+
+# Apply the firewall rules for weave.
+
+if ! iptables -L -n | grep -q -i 'weave: managed by terraform'; then
+  iptables -I INPUT -i eth0 -p tcp --dport 6781:6782 -j DROP
+  iptables -I INPUT -i eth0 -p tcp --dport 6781:6782 -m set --match-set pods src -j ACCEPT -m comment --comment 'weave: managed by terraform'
+  iptables -I INPUT -i eth0 -p tcp --dport 6781:6782 -m set --match-set nodes src -j ACCEPT -m comment --comment 'weave: managed by terraform'
+fi
 EOF
   }
 
   provisioner "remote-exec" {
     inline = [
+      "tr -d '\\r' < /etc/network/if-up.d/default-firewall-rules-new > /etc/network/if-up.d/default-firewall-rules",
+      "rm -f /etc/network/if-up.d/default-firewall-rules-new",
       "chmod +x /etc/network/if-up.d/default-firewall-rules",
-      "iptables -D INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP",
-      "iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 2379:2380 -j ACCEPT",
-
-      "iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 2379:2380 -j ACCEPT",
-      "iptables -A INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP",
-
-      "iptables -D INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP",
-      "iptables -D INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},${local.kubernetes_subnet},127.0.0.1 --dport 10250:10255 -j ACCEPT",
-
-      "iptables -A INPUT -i eth0 -p tcp -s ${join(",", local.kubernetes_control_plane_addresses)},1${local.kubernetes_subnet},127.0.0.1 --dport 10250:10255 -j ACCEPT",
-      "iptables -A INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP",
+      "export IFACE=eth0",
+      "/bin/sh /etc/network/if-up.d/default-firewall-rules",
     ]
   }
 
