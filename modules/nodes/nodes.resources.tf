@@ -141,6 +141,16 @@ if [ "$IFACE" != "eth0" ]; then
   exit 0
 fi
 
+# Create the ipset for the load balancers.
+
+if ! ipset list | grep -q -i 'Name: loadbalancers'; then
+  ipset create loadbalancers hash:ip hashsize 1024
+fi
+
+ipset flush loadbalancers
+
+ipset add loadbalancers ${join(" && ipset add loadbalancers ", local.kubernetes_api_addresses)}
+
 # Create the ipset for the control plane nodes.
 
 if ! ipset list | grep -q -i 'Name: nodes'; then
@@ -162,22 +172,26 @@ ipset flush pods
 
 ipset add pods ${local.kubernetes_subnet}
 
-# Apply the firewall rules for etcd.
+# Apply the firewall rules for Etcd.
 
 if ! iptables -L -n | grep -q -i 'etcd: managed by terraform'; then
   iptables -I INPUT -i eth0 -p tcp --dport 2379:2380 -j DROP -m comment --comment 'etcd: managed by terraform'
   iptables -I INPUT -i eth0 -p tcp --dport 2379:2380 -m set --match-set nodes src -j ACCEPT -m comment --comment 'etcd: managed by terraform'
 fi
 
-# Apply the firewall rules for kubernetes.
+# Apply the firewall rules for Kubernetes.
 
 if ! iptables -L -n | grep -q -i 'kubernetes: managed by terraform'; then
   iptables -I INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP
   iptables -I INPUT -i eth0 -p tcp --dport 10250:10255 -m set --match-set pods src -j ACCEPT -m comment --comment 'kubernetes: managed by terraform'
   iptables -I INPUT -i eth0 -p tcp --dport 10250:10255 -m set --match-set nodes src -j ACCEPT -m comment --comment 'kubernetes: managed by terraform'
+
+  iptables -I INPUT -i eth0 -p tcp --dport 6443 -j DROP
+  iptables -I INPUT -i eth0 -p tcp --dport 6443 -m set --match-set nodes src -j ACCEPT -m comment --comment 'kubernetes: managed by terraform'
+  iptables -I INPUT -i eth0 -p tcp --dport 6443 -m set --match-set loadbalancers src -j ACCEPT -m comment --comment 'kubernetes: managed by terraform'
 fi
 
-# Apply the firewall rules for weave.
+# Apply the firewall rules for Weave Net.
 
 if ! iptables -L -n | grep -q -i 'weave: managed by terraform'; then
   iptables -I INPUT -i eth0 -p tcp --dport 6781:6782 -j DROP
@@ -198,6 +212,7 @@ EOF
   }
 
   triggers = {
+    api_addresses           = join(",", local.kubernetes_api_addresses)
     control_plane_addresses = join(",", local.kubernetes_control_plane_addresses)
   }
 }
