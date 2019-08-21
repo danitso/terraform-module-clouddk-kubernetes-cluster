@@ -21,6 +21,8 @@ Terraform Module for creating a Kubernetes Cluster on [Cloud.dk](https://cloud.d
     - [Output](#output)
 - [Frequently asked questions](#frequently-asked-questions)
     - [Why are the nodes occasionally rebooting after midnight?](#why-are-the-nodes-occasionally-rebooting-after-midnight)
+- [Known issues](#known-issues)
+    - [Additional load balancers triggers SSL verification issues](#additional-load-balancers-triggers-SSL-verification-issues)
 
 ## Creating the cluster
 
@@ -432,3 +434,11 @@ The delay between each reboot is meant to reduce the impact on a pool. However, 
 You can also disable unattended OS upgrades by setting the two input variables [master_node_unattended_upgrades](#master_node_unattended_upgrades) and [worker_node_unattended_upgrades](#worker_node_unattended_upgrades) to `false`. However, this is not recommended unless you have another maintenance procedure in place.
 
 **NOTE**: Unattended OS upgrades are permanently disabled for load balancers and needs to be maintained manually. This should reduce the risk of a cluster outage in case the cluster only has a single load balancer for the API.
+
+## Known issues
+
+### Additional load balancers triggers SSL verification issues
+
+The first time the cluster is provisioned, the IP addresses of the load balancers and master nodes are included as alternative names in the SSL certificate. This certificate is only generated once, which results in verification issues when new load balancers are introduced afterwards.
+
+The issue will be fixed in a future release of the module.
