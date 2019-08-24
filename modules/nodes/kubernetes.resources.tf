@@ -393,7 +393,7 @@ metadata:
   namespace: kube-system
 type: Opaque
 data:
-  weave-password: ${base64encode(random_string.kubernetes_network_password.result)}
+  weave-password: ${base64encode(element(concat(random_string.kubernetes_network_password.*.result, list("")), 0))}
 ---
 apiVersion: v1
 kind: List
@@ -611,6 +611,7 @@ EOT
 }
 
 resource "random_string" "kubernetes_network_password" {
+  count  = var.master ? 1 : 0
   length = 32
 }
 #===============================================================================
