@@ -262,7 +262,7 @@ resource "null_resource" "kubernetes_cloud_controller" {
   }
 
   provisioner "file" {
-    destination = "/tmp/clouddk.config.yaml"
+    destination = "/tmp/clouddk.controller.yaml"
     content     = <<EOT
 apiVersion: v1
 kind: Secret
@@ -275,15 +275,80 @@ data:
   CLOUDDK_API_KEY: ${base64encode(var.provider_token)}
   CLOUDDK_SSH_PRIVATE_KEY: ${base64encode(base64encode(tls_private_key.private_ssh_key.private_key_pem))}
   CLOUDDK_SSH_PUBLIC_KEY: ${base64encode(base64encode(tls_private_key.private_ssh_key.public_key_openssh))}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: clouddk-cloud-controller-manager
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system:clouddk-cloud-controller-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: clouddk-cloud-controller-manager
+  namespace: kube-system
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    k8s-app: clouddk-cloud-controller-manager
+  name: clouddk-cloud-controller-manager
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: clouddk-cloud-controller-manager
+  template:
+    metadata:
+      labels:
+        k8s-app: clouddk-cloud-controller-manager
+    spec:
+      serviceAccountName: clouddk-cloud-controller-manager
+      containers:
+      - name: clouddk-cloud-controller-manager
+        image: docker.io/danitso/clouddk-cloud-controller-manager:latest
+        args:
+        - --allocate-node-cidrs=true
+        - --cloud-provider=clouddk
+        - --cluster-cidr="${local.kubernetes_subnet}"
+        - --cluster-name="${var.cluster_name}"
+        - --configure-cloud-routes=false
+        - --leader-elect=true
+        - --use-service-account-credentials
+        envFrom:
+        - secretRef:
+            name: clouddk-cloud-controller-manager-config
+      hostNetwork: true
+      tolerations:
+      - key: node.cloudprovider.kubernetes.io/uninitialized
+        value: "true"
+        effect: NoSchedule
+        operator: Equal
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+        operator: Exists
+      - key: node.kubernetes.io/not-ready
+        effect: NoSchedule
+        operator: Exists
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
 EOT
   }
 
   provisioner "remote-exec" {
     inline = [
       "export KUBECONFIG=/etc/kubernetes/admin.conf",
-      "kubectl apply -f /tmp/clouddk.config.yaml",
-      "rm -f /tmp/clouddk.config.yaml",
-      "kubectl apply -f https://raw.githubusercontent.com/danitso/clouddk-cloud-controller-manager/master/deployment.yaml",
+      "tr -d '\\r' < /tmp/clouddk.controller.yaml > /tmp/clouddk.controller.sanitized.yaml",
+      "kubectl apply -f /tmp/clouddk.controller.sanitized.yaml",
+      "rm -f /tmp/clouddk.controller.yaml /tmp/clouddk.controller.sanitized.yaml",
     ]
   }
 
@@ -316,15 +381,237 @@ resource "null_resource" "kubernetes_network" {
     timeout     = "5m"
   }
 
+  provisioner "file" {
+    destination = "/tmp/weave.net.yaml"
+    content     = <<EOT
+apiVersion: v1
+kind: Secret
+metadata:
+  name: weave-password
+  labels:
+    name: weave-net
+  namespace: kube-system
+type: Opaque
+data:
+  weave-password: ${base64encode(random_string.kubernetes_network_password.result)}
+---
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: weave-net
+      labels:
+        name: weave-net
+      namespace: kube-system
+  - apiVersion: rbac.authorization.k8s.io/v1beta1
+    kind: ClusterRole
+    metadata:
+      name: weave-net
+      labels:
+        name: weave-net
+    rules:
+      - apiGroups:
+          - ''
+        resources:
+          - pods
+          - namespaces
+          - nodes
+        verbs:
+          - get
+          - list
+          - watch
+      - apiGroups:
+          - networking.k8s.io
+        resources:
+          - networkpolicies
+        verbs:
+          - get
+          - list
+          - watch
+      - apiGroups:
+          - ''
+        resources:
+          - nodes/status
+        verbs:
+          - patch
+          - update
+  - apiVersion: rbac.authorization.k8s.io/v1beta1
+    kind: ClusterRoleBinding
+    metadata:
+      name: weave-net
+      labels:
+        name: weave-net
+    roleRef:
+      kind: ClusterRole
+      name: weave-net
+      apiGroup: rbac.authorization.k8s.io
+    subjects:
+      - kind: ServiceAccount
+        name: weave-net
+        namespace: kube-system
+  - apiVersion: rbac.authorization.k8s.io/v1beta1
+    kind: Role
+    metadata:
+      name: weave-net
+      labels:
+        name: weave-net
+      namespace: kube-system
+    rules:
+      - apiGroups:
+          - ''
+        resourceNames:
+          - weave-net
+        resources:
+          - configmaps
+        verbs:
+          - get
+          - update
+      - apiGroups:
+          - ''
+        resources:
+          - configmaps
+        verbs:
+          - create
+  - apiVersion: rbac.authorization.k8s.io/v1beta1
+    kind: RoleBinding
+    metadata:
+      name: weave-net
+      labels:
+        name: weave-net
+      namespace: kube-system
+    roleRef:
+      kind: Role
+      name: weave-net
+      apiGroup: rbac.authorization.k8s.io
+    subjects:
+      - kind: ServiceAccount
+        name: weave-net
+        namespace: kube-system
+  - apiVersion: extensions/v1beta1
+    kind: DaemonSet
+    metadata:
+      name: weave-net
+      labels:
+        name: weave-net
+      namespace: kube-system
+    spec:
+      minReadySeconds: 5
+      template:
+        metadata:
+          labels:
+            name: weave-net
+        spec:
+          containers:
+            - name: weave
+              command:
+                - /home/weave/launch.sh
+                - ${join("\n                - ", local.kubernetes_control_plane_addresses)}
+              env:
+                - name: HOSTNAME
+                  valueFrom:
+                    fieldRef:
+                      apiVersion: v1
+                      fieldPath: spec.nodeName
+                - name: IPALLOC_RANGE
+                  value: "${local.kubernetes_subnet}"
+                - name: WEAVE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: weave-password
+                      key: weave-password
+              image: 'docker.io/weaveworks/weave-kube:${local.kubernetes_weave_net_version}'
+              readinessProbe:
+                httpGet:
+                  host: 127.0.0.1
+                  path: /status
+                  port: 6784
+              resources:
+                requests:
+                  cpu: 10m
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - name: weavedb
+                  mountPath: /weavedb
+                - name: cni-bin
+                  mountPath: /host/opt
+                - name: cni-bin2
+                  mountPath: /host/home
+                - name: cni-conf
+                  mountPath: /host/etc
+                - name: dbus
+                  mountPath: /host/var/lib/dbus
+                - name: lib-modules
+                  mountPath: /lib/modules
+                - name: xtables-lock
+                  mountPath: /run/xtables.lock
+            - name: weave-npc
+              env:
+                - name: HOSTNAME
+                  valueFrom:
+                    fieldRef:
+                      apiVersion: v1
+                      fieldPath: spec.nodeName
+              image: 'docker.io/weaveworks/weave-npc:${local.kubernetes_weave_net_version}'
+              resources:
+                requests:
+                  cpu: 10m
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - name: xtables-lock
+                  mountPath: /run/xtables.lock
+          hostNetwork: true
+          hostPID: true
+          restartPolicy: Always
+          securityContext:
+            seLinuxOptions: {}
+          serviceAccountName: weave-net
+          tolerations:
+            - effect: NoSchedule
+              operator: Exists
+          volumes:
+            - name: weavedb
+              hostPath:
+                path: /var/lib/weave
+            - name: cni-bin
+              hostPath:
+                path: /opt
+            - name: cni-bin2
+              hostPath:
+                path: /home
+            - name: cni-conf
+              hostPath:
+                path: /etc
+            - name: dbus
+              hostPath:
+                path: /var/lib/dbus
+            - name: lib-modules
+              hostPath:
+                path: /lib/modules
+            - name: xtables-lock
+              hostPath:
+                path: /run/xtables.lock
+                type: FileOrCreate
+      updateStrategy:
+        type: RollingUpdate
+EOT
+  }
+
   provisioner "remote-exec" {
     inline = [
       "export KUBECONFIG=/etc/kubernetes/admin.conf",
-      "rm -f cni.yaml",
-      "wget -O cni.yaml https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')'&'known-peers=${join(",", flatten(clouddk_server.node.*.network_interface_addresses))}",
-      "kubectl apply -f cni.yaml",
-      "rm -f cni.yaml",
+      "tr -d '\\r' < /tmp/weave.net.yaml > /tmp/weave.net.sanitized.yaml",
+      "kubectl apply -f /tmp/weave.net.sanitized.yaml",
+      "rm -f /tmp/weave.net.yaml /tmp/weave.net.sanitized.yaml",
     ]
   }
+}
+
+resource "random_string" "kubernetes_network_password" {
+  length = 32
 }
 #===============================================================================
 # STEP 7: Create service account

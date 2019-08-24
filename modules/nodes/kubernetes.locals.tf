@@ -38,6 +38,7 @@ locals {
   kubernetes_service_account_token = trimspace(element(concat(data.sftp_remote_file.kubernetes_token.*.contents, list("")), 0))
   kubernetes_subnet                = "10.32.0.0/12"
   kubernetes_version               = "1.15.2"
+  kubernetes_weave_net_version     = "2.5.2"
 
   kubernetes_config_raw = <<EOF
 current-context: ${var.cluster_name}

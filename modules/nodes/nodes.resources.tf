@@ -185,10 +185,6 @@ if ! iptables -L -n | grep -q -i 'kubernetes: managed by terraform'; then
   iptables -I INPUT -i eth0 -p tcp --dport 10250:10255 -j DROP
   iptables -I INPUT -i eth0 -p tcp --dport 10250:10255 -m set --match-set pods src -j ACCEPT -m comment --comment 'kubernetes: managed by terraform'
   iptables -I INPUT -i eth0 -p tcp --dport 10250:10255 -m set --match-set nodes src -j ACCEPT -m comment --comment 'kubernetes: managed by terraform'
-
-  iptables -I INPUT -i eth0 -p tcp --dport 6443 -j DROP
-  iptables -I INPUT -i eth0 -p tcp --dport 6443 -m set --match-set nodes src -j ACCEPT -m comment --comment 'kubernetes: managed by terraform'
-  iptables -I INPUT -i eth0 -p tcp --dport 6443 -m set --match-set loadbalancers src -j ACCEPT -m comment --comment 'kubernetes: managed by terraform'
 fi
 
 # Apply the firewall rules for Weave Net.
