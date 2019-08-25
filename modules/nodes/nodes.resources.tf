@@ -46,7 +46,7 @@ EOF
       "apt-get -q update",
       "apt-get -q upgrade -y",
       "apt-get -q dist-upgrade -y",
-      "apt-get -q install -y apt-transport-https ca-certificates curl gnupg-agent ipset software-properties-common",
+      "apt-get -q install -y apt-transport-https ca-certificates curl gnupg-agent ipset nfs-common software-properties-common",
       "swapoff -a",
       "sed -i '/ swap / s/^/#/' /etc/fstab",
       "echo '${trimspace(tls_private_key.private_ssh_key.public_key_openssh)}' >> ~/.ssh/authorized_keys",
