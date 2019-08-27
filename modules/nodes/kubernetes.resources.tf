@@ -615,7 +615,54 @@ resource "random_string" "kubernetes_network_password" {
   length = 32
 }
 #===============================================================================
-# STEP 7: Create service account
+# STEP 7: Deploy CSI driver
+#===============================================================================
+resource "null_resource" "kubernetes_csi_driver" {
+  count      = var.master ? 1 : 0
+  depends_on = ["null_resource.kubernetes_network"]
+
+  connection {
+    type  = "ssh"
+    agent = false
+
+    host        = element(flatten(clouddk_server.node[0].network_interface_addresses), 0)
+    port        = 22
+    user        = "root"
+    private_key = tls_private_key.private_ssh_key.private_key_pem
+    timeout     = "5m"
+  }
+
+  provisioner "file" {
+    destination = "/tmp/clouddk-csi-driver-config.yaml"
+    content     = <<EOT
+apiVersion: v1
+kind: Secret
+metadata:
+  name: clouddk-csi-driver-config
+  namespace: kube-system
+type: Opaque
+data:
+  CLOUDDK_API_ENDPOINT: ${base64encode("https://api.cloud.dk/v1")}
+  CLOUDDK_API_KEY: ${base64encode(var.provider_token)}
+  CLOUDDK_SERVER_MEMORY: ${base64encode("4096")}
+  CLOUDDK_SERVER_PROCESSORS: ${base64encode("2")}
+  CLOUDDK_SSH_PRIVATE_KEY: ${base64encode(base64encode(tls_private_key.private_ssh_key.private_key_pem))}
+  CLOUDDK_SSH_PUBLIC_KEY: ${base64encode(base64encode(tls_private_key.private_ssh_key.public_key_openssh))}
+EOT
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "export KUBECONFIG=/etc/kubernetes/admin.conf",
+      "tr -d '\\r' < /tmp/clouddk-csi-driver-config.yaml > /tmp/clouddk-csi-driver-config.sanitized.yaml",
+      "kubectl apply -f /tmp/clouddk-csi-driver-config.sanitized.yaml",
+      "rm -f /tmp/clouddk-csi-driver-config.yaml /tmp/clouddk-csi-driver-config.sanitized.yaml",
+      "kubectl apply -f https://raw.githubusercontent.com/danitso/clouddk-csi-driver/master/deployment.yaml",
+    ]
+  }
+}
+#===============================================================================
+# STEP 8: Create service account
 #===============================================================================
 resource "null_resource" "kubernetes_service_account" {
   count      = var.master ? 1 : 0
@@ -643,7 +690,7 @@ resource "null_resource" "kubernetes_service_account" {
   }
 }
 #===============================================================================
-# STEP 8: Create local KUBECONFIG file
+# STEP 9: Create local KUBECONFIG file
 #===============================================================================
 resource "local_file" "kubernetes_config" {
   count      = var.master ? 1 : 0
