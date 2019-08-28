@@ -656,7 +656,7 @@ EOT
       "export KUBECONFIG=/etc/kubernetes/admin.conf",
       "tr -d '\\r' < /tmp/clouddk-csi-driver-config.yaml > /tmp/clouddk-csi-driver-config.sanitized.yaml",
       "kubectl apply -f /tmp/clouddk-csi-driver-config.sanitized.yaml",
-      "rm -f /tmp/clouddk-csi-driver-config.yaml /tmp/clouddk-csi-driver-config.sanitized.yaml",
+      "rm -f /tmp/clouddk-csi-driver-config*",
       "kubectl apply -f https://raw.githubusercontent.com/danitso/clouddk-csi-driver/master/deployment.yaml",
     ]
   }
