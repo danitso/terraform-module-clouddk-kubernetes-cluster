@@ -672,7 +672,7 @@ EOT
 #===============================================================================
 resource "null_resource" "kubernetes_service_account" {
   count      = var.master ? 1 : 0
-  depends_on = ["null_resource.kubernetes_network"]
+  depends_on = ["null_resource.kubernetes_csi_driver"]
 
   connection {
     type  = "ssh"
