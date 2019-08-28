@@ -77,6 +77,7 @@ output "initialized" {
     null_resource.kubernetes_join.*.id,
     null_resource.kubernetes_cloud_controller.*.id,
     null_resource.kubernetes_network.*.id,
+    null_resource.kubernetes_csi_driver.*.id,
     null_resource.kubernetes_service_account.*.id
   )), "/.*/", "")}"
 }
