@@ -195,6 +195,23 @@ EOT
       "kubeadm init --config=/tmp/config.yaml --upload-certs",
     ]
   }
+
+
+  provisioner "remote-exec" {
+    when = "destroy"
+    inline = [
+      "[ ! -f /etc/kubernetes/admin.conf ] && exit 0",
+      "export KUBECONFIG=/etc/kubernetes/admin.conf",
+      "echo Deleting all persistent volumes to force cloud servers to be destroyed",
+      "kubectl delete pvc --all --all-namespaces",
+      "while kubectl get pvc --all-namespaces | grep -q -i clouddk; do sleep 2; done",
+      "kubectl delete pv --all --all-namespaces",
+      "while kubectl get pv --all-namespaces | grep -q -i clouddk; do sleep 2; done",
+      "echo Deleting all service definitions to force cloud servers to be destroyed",
+      "kubectl delete svc --all --all-namespaces",
+      "while kubectl get svc --all-namespaces | grep -q -i loadbalancer; do sleep 2; done",
+    ]
+  }
 }
 
 resource "random_string" "kubernetes_bootstrap_token" {
@@ -349,17 +366,6 @@ EOT
       "tr -d '\\r' < /tmp/clouddk.controller.yaml > /tmp/clouddk.controller.sanitized.yaml",
       "kubectl apply -f /tmp/clouddk.controller.sanitized.yaml",
       "rm -f /tmp/clouddk.controller.yaml /tmp/clouddk.controller.sanitized.yaml",
-    ]
-  }
-
-  provisioner "remote-exec" {
-    when = "destroy"
-    inline = [
-      "[ ! -f /etc/kubernetes/admin.conf ] && exit 0",
-      "export KUBECONFIG=/etc/kubernetes/admin.conf",
-      "echo Deleting all service definitions to force load balancers to be destroyed",
-      "kubectl delete svc --all --all-namespaces",
-      "while kubectl get svc --all-namespaces | grep -q -i loadbalancer; do sleep 1; done",
     ]
   }
 }
