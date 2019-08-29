@@ -325,6 +325,8 @@ spec:
       k8s-app: clouddk-cloud-controller-manager
   template:
     metadata:
+      annotations:
+        config-hash: ${md5(var.provider_token)}
       labels:
         k8s-app: clouddk-cloud-controller-manager
     spec:
@@ -367,6 +369,10 @@ EOT
       "kubectl apply -f /tmp/clouddk.controller.sanitized.yaml",
       "rm -f /tmp/clouddk.controller.yaml /tmp/clouddk.controller.sanitized.yaml",
     ]
+  }
+
+  triggers = {
+    provider_token = md5(var.provider_token)
   }
 }
 #===============================================================================
@@ -665,6 +671,12 @@ EOT
       "rm -f /tmp/clouddk-csi-driver-config*",
       "kubectl apply -f https://raw.githubusercontent.com/danitso/clouddk-csi-driver/master/deployment.yaml",
     ]
+  }
+
+  triggers = {
+    network_storage_memory     = var.network_storage_memory
+    network_storage_processors = var.network_storage_processors
+    provider_token             = md5(var.provider_token)
   }
 }
 #===============================================================================
