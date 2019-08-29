@@ -7,18 +7,20 @@
 module "master_nodes" {
   source = "./modules/nodes"
 
-  cluster_name             = var.cluster_name
-  load_balancer_count      = var.load_balancer_count
-  load_balancer_memory     = var.load_balancer_memory
-  load_balancer_processors = var.load_balancer_processors
-  master                   = true
-  node_count               = var.master_node_count
-  node_memory              = var.master_node_memory
-  node_pool_name           = "master"
-  node_processors          = var.master_node_processors
-  provider_location        = var.provider_location
-  provider_token           = var.provider_token
-  unattended_upgrades      = var.master_node_unattended_upgrades
+  cluster_name               = var.cluster_name
+  load_balancer_count        = var.load_balancer_count
+  load_balancer_memory       = var.load_balancer_memory
+  load_balancer_processors   = var.load_balancer_processors
+  master                     = true
+  network_storage_memory     = var.network_storage_memory
+  network_storage_processors = var.network_storage_processors
+  node_count                 = var.master_node_count
+  node_memory                = var.master_node_memory
+  node_pool_name             = "master"
+  node_processors            = var.master_node_processors
+  provider_location          = var.provider_location
+  provider_token             = var.provider_token
+  unattended_upgrades        = var.master_node_unattended_upgrades
 }
 #===============================================================================
 # STEP 2: Create worker nodes (pool: default)

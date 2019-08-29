@@ -253,7 +253,7 @@ resource "null_resource" "kubernetes_join" {
   }
 
   provisioner "remote-exec" {
-    when   = "destroy"
+    when = "destroy"
     inline = [
       "[ ! -f /etc/kubernetes/bootstrap-kubelet.conf ] && exit 0",
       "kubeadm reset -f",
@@ -650,8 +650,8 @@ type: Opaque
 data:
   CLOUDDK_API_ENDPOINT: ${base64encode("https://api.cloud.dk/v1")}
   CLOUDDK_API_KEY: ${base64encode(var.provider_token)}
-  CLOUDDK_SERVER_MEMORY: ${base64encode("4096")}
-  CLOUDDK_SERVER_PROCESSORS: ${base64encode("2")}
+  CLOUDDK_SERVER_MEMORY: ${base64encode(var.network_storage_memory)}
+  CLOUDDK_SERVER_PROCESSORS: ${base64encode(var.network_storage_processors)}
   CLOUDDK_SSH_PRIVATE_KEY: ${base64encode(base64encode(tls_private_key.private_ssh_key.private_key_pem))}
   CLOUDDK_SSH_PUBLIC_KEY: ${base64encode(base64encode(tls_private_key.private_ssh_key.public_key_openssh))}
 EOT

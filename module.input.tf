@@ -50,6 +50,18 @@ variable "master_node_unattended_upgrades" {
   type        = bool
 }
 
+variable "network_storage_memory" {
+  description = "The minimum amount of memory (in megabytes) for network storage servers"
+  default     = 4096
+  type        = number
+}
+
+variable "network_storage_processors" {
+  description = "The minimum number of processors (cores) for network storage servers"
+  default     = 2
+  type        = number
+}
+
 variable "provider_location" {
   description = "The cluster's geographical location"
   default     = "dk1"

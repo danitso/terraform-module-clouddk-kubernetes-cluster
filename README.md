@@ -245,6 +245,18 @@ Whether to enable unattended OS upgrades for the master nodes.
 
 **Default**: true
 
+#### network_storage_memory
+
+The minimum amount of memory (in megabytes) for network storage servers.
+
+**Default**: 4096
+
+#### network_storage_processors
+
+The minimum number of processors (cores) for network storage servers.
+
+**Default**: 2
+
 #### provider_location
 
 The cluster's geographical location.

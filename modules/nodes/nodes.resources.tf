@@ -284,7 +284,7 @@ EOF
   }
 
   provisioner "remote-exec" {
-    when   = "destroy"
+    when = "destroy"
     inline = [
       "export DEBIAN_FRONTEND=noninteractive",
       "while ps aux | grep -q [a]pt; do sleep 1; done",
